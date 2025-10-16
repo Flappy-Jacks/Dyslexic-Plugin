@@ -3,14 +3,21 @@ const focusLength = document.getElementById("focusLength");
 const focusLengthValue = document.getElementById("focusLengthValue");
 const darkModeToggle = document.getElementById("darkModeToggle");
 const darkModeToggle2 = document.getElementById("darkModeToggle2");
-// const testToggle = document.getElementById("testToggle");
+
+const fontSearch = document.getElementById("chooseFont");
+const fontChoices = document.getElementById("fontChoices");
+const fonts = [
+  "Default", "Arial", "Verdana", "Helvetica", "Times New Roman", "Courier New",
+  "Georgia", "Palatino", "Garamond", "Bookman", "Comic Sans MS",
+  "Trebuchet MS", "Arial Black", "Impact", "Lucida Console", "Tahoma"
+];
 
 let s = {
   isEnabled: false,
   focusLength: 2,
   isDarkMode: false,
   isDarkMode2: false,
-  // testToggle: false,
+  selectedFont: ""
 };
 
 chrome.storage.sync.get(Object.keys(s), (saved) => {
@@ -21,17 +28,43 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   focusLengthValue.textContent = focusLength.value;
   darkModeToggle.checked = s.isDarkMode;
   darkModeToggle2.checked = s.isDarkMode2;
-  // testToggle.checked = s.testToggle
+  fontSearch.value = s.selectedFont
 });
 
-// testToggle.addEventListener("change", () => {
-//   const isTestToggle = testToggle.checked;
-//   chrome.storage.sync.set({ testToggle: isTestToggle })
+function populateDropdown(filter = "") {
+  fontChoices.innerHTML = "";
+  const filteredChoices = fonts.filter(font => font.toLowerCase().includes(filter.toLocaleLowerCase()));
+  filteredChoices.forEach(font => {
+    const option = document.createElement("div");
+    option.textContent = font;
+    option.style.cursor = "pointer";
+    option.onclick = () => selectFont(font);
+    fontChoices.appendChild(option)
+  });
+}
 
-//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//     chrome.tabs.sendMessage(tabs[0].id, { action: "testToggle", testToggle });
-//   });
-// });
+function selectFont(font) {
+  fontSearch.value = font;
+  fontChoices.innerHTML = "";
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      action: "changeFont",
+      fontFamily: font
+    });
+  });
+  chrome.storage.sync.set({ selectedFont: font });
+}
+
+fontSearch.addEventListener("input", () => { populateDropdown(fontSearch.value); });
+fontSearch.addEventListener("focus", () => { populateDropdown(fontSearch.value); });
+fontSearch.addEventListener("blur", () => { setTimeout(() => fontChoices.innerHTML = "", 200); });
+
+// On load, set input to saved font
+chrome.storage.sync.get("selectedFont", (data) => {
+  if (data.selectedFont) {
+    fontSearch.value = data.selectedFont;
+  }
+});
 
 toggleSwitch.addEventListener("change", () => {
   const isEnabled = toggleSwitch.checked;

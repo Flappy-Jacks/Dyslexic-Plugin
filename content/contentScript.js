@@ -1,4 +1,5 @@
 import { activateBionicReading, deactivateBionicReading, updateBionicReading } from "./bionic";
+import { changeFont } from "./font";
 
 
 let settings = {
@@ -6,23 +7,23 @@ let settings = {
   focusLength: 2,
   isDarkMode: false,
   isDarkMode2: false,
-  // testToggle: false,
+  selectedFont: "",
 }
 
-// Loads user saved prefrences/settings if available
+// Loads user saved settings
 chrome.storage.sync.get(Object.keys(settings), (saved) => {
     Object.assign(settings, saved)
-    if (settings.isEnabled) {
-      activateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength);
-    }
-});
+    if (settings.isEnabled) { activateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength); }
+    if (settings.selectedFont) { changeFont(settings.selectedFont) } 
+  });
 
-// handles different requests
+// handle requests
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
-    // case "testToggle":
-    //   settings.isEnabled = true;
-    //   break;
+    case "changeFont":
+        changeFont(request.fontFamily);
+        settings.selectedFont = request.fontFamily
+      break;
 
     case "activateBionicReading":
       settings.isEnabled = true;
