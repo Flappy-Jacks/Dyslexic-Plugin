@@ -3,14 +3,35 @@ const focusLength = document.getElementById("focusLength");
 const focusLengthValue = document.getElementById("focusLengthValue");
 const darkModeToggle = document.getElementById("darkModeToggle");
 const darkModeToggle2 = document.getElementById("darkModeToggle2");
+// const testToggle = document.getElementById("testToggle");
 
-chrome.storage.sync.get(["isEnabled", "focusLength", "isDarkMode", "isDarkMode2"], ({ isEnabled, focusLength: savedFocusLength, isDarkMode, isDarkMode2 }) => {
-  toggleSwitch.checked = isEnabled;
-  focusLength.value = savedFocusLength || 2;
+let s = {
+  isEnabled: false,
+  focusLength: 2,
+  isDarkMode: false,
+  isDarkMode2: false,
+  // testToggle: false,
+};
+
+chrome.storage.sync.get(Object.keys(s), (saved) => {
+  Object.assign(s, saved);
+
+  toggleSwitch.checked = s.isEnabled;
+  focusLength.value = s.focusLength || 2;
   focusLengthValue.textContent = focusLength.value;
-  darkModeToggle.checked = isDarkMode;
-  darkModeToggle2.checked = isDarkMode2;
+  darkModeToggle.checked = s.isDarkMode;
+  darkModeToggle2.checked = s.isDarkMode2;
+  // testToggle.checked = s.testToggle
 });
+
+// testToggle.addEventListener("change", () => {
+//   const isTestToggle = testToggle.checked;
+//   chrome.storage.sync.set({ testToggle: isTestToggle })
+
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     chrome.tabs.sendMessage(tabs[0].id, { action: "testToggle", testToggle });
+//   });
+// });
 
 toggleSwitch.addEventListener("change", () => {
   const isEnabled = toggleSwitch.checked;

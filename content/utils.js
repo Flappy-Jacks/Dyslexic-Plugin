@@ -19,10 +19,10 @@ export function getTextNodes(element) {
 }
 
 export function injectCSS(isDarkMode, isDarkMode2) {
-    const primaryColor = isDarkMode ? '#B0C4DE' : 'inherit';
+    const primaryColor = isDarkMode ? '#B0C4DE' : 'blue';
     const secondaryColor = isDarkMode ? '#A0D6B4' : 'grey';
 
-    const primaryColor2 = isDarkMode2 ? '#FFA07A' : 'inherit'; // New alternate color
+    const primaryColor2 = isDarkMode2 ? '#FFA07A' : 'blue'; // New alternate color
     const secondaryColor2 = isDarkMode2 ? '#FFB6C1' : 'grey'; // New alternate color
 
     const styles = `
