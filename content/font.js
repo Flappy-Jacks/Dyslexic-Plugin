@@ -11,3 +11,17 @@ export function changeFont(fontFamily) {
     `;
     document.head.appendChild(style);
 }
+
+export function changeFontColor(fontColor) {
+    const existing = document.getElementById("newFontColor");
+    if (existing) { existing.remove(); }
+    if (fontColor === "Default") return;
+    const style = document.createElement("style");
+    style.id = "newFontColor";
+    style.textContent = `
+        body, body * {
+        color: ${fontColor} !important;
+        }
+    `;
+    document.head.appendChild(style);
+}

@@ -7,7 +7,7 @@ export function activateBionicReading(isDarkMode, isDarkMode2, focusLength) {
         let newNode = document.createElement("span");
         newNode.innerHTML = bionicText;
         node.parentNode.replaceChild(newNode, node);
-    });
+    }); 
 }
 
 export function deactivateBionicReading() {
