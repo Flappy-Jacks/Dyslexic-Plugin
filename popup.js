@@ -14,6 +14,7 @@ const fonts = [
 const fontColorSearch = document.getElementById("chooseFontColor");
 const fontColorChoices = document.getElementById("fontColorChoices");
 const fontColors = [ "Default", "Blue", "Green", "Red"];
+const fontSizeSearch = document.getElementById("chooseFontSize");
 
 let s = {
   isEnabled: false,
@@ -22,6 +23,7 @@ let s = {
   isDarkMode2: false,
   selectedFont: "",
   selectedFontColor: "",
+  selectedFontSize: "",
 };
 
 chrome.storage.sync.get(Object.keys(s), (saved) => {
@@ -34,6 +36,15 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   darkModeToggle2.checked = s.isDarkMode2;
   fontSearch.value = s.selectedFont
   fontColorSearch.value = s.selectedFontColor;
+  fontSizeSearch.value = s.selectedFontSize;
+});
+
+fontSizeSearch.addEventListener("input", () => {
+  const value = fontSizeSearch.value;
+  chrome.storage.sync.set({ selectedFontSize: value });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeFontSize", size: value });
+  });
 });
 
 function populateFontColorDropdown(filter = "") {

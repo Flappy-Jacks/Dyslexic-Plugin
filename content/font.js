@@ -25,3 +25,17 @@ export function changeFontColor(fontColor) {
     `;
     document.head.appendChild(style);
 }
+
+export function changeFontSize(fontSize) {
+    const existing = document.getElementById("newFontSize");
+    if (existing) { existing.remove(); }
+    if (fontSize === "0") return;
+    const style = document.createElement("style");
+    style.id = "newFontSize";
+    style.textContent = `
+        body, body * {
+        font-size: ${fontSize}px !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
