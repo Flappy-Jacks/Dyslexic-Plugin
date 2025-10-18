@@ -21,7 +21,11 @@ const bgColors = [ "Default", "Blue", "Green", "Red"];
 const bgColorSearch = document.getElementById("chooseBgColor");
 const bgColorChoices = document.getElementById("bgColorChoices");
 const lineSpacingSearch = document.getElementById("chooseLineSpacing");
+
 const resetSettings = document.getElementById("resetSettings");
+const compactButton = document.getElementById("compact");
+const openButton = document.getElementById("open");
+const relaxedButton = document.getElementById("relaxed");
 
 let s = {
   isEnabled: false,
@@ -52,6 +56,24 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   letterSpacingSearch.value = s.selectedLetterSpacing;
   bgColorSearch.value = s.selectedBgColor;
   lineSpacingSearch.value = s.selectedLineSpacing;
+});
+
+openButton.addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "applyOpen" });
+  });
+});
+
+relaxedButton.addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "applyRelaxed" });
+  });
+});
+
+compactButton.addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "applyCompact" });
+  });
 });
 
 lineSpacingSearch.addEventListener("input", () => {
@@ -211,24 +233,11 @@ darkModeToggle2.addEventListener("change", () => {
   });
 });
 
-
 resetSettings.addEventListener("click", () => {
   chrome.storage.sync.clear(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { action: "resetSettings" });
     });
-
-    // toggleSwitch.checked = false;
-    // focusLength.value = 2;
-    // focusLengthValue.textContent = "2";
-    // darkModeToggle.checked = false;
-    // darkModeToggle2.checked = false;
-    // fontSearch.value = "";
-    // fontColorSearch.value = "";
-    // fontSizeSearch.value = "";
-    // wordSpacingSearch.value = "";
-    // letterSpacingSearch.value = "";
-    // bgColorSearch.value = "";
     window.location.reload();
   })
 })

@@ -40,7 +40,7 @@ function changeFontSize(fontSize) {
     document.head.appendChild(style);
 }
 
-function changeWordSpacing(spacingSize) {
+function changeWordSpacing(spacingSize, unit = "em") {
     const existing = document.getElementById("newWordSpacing");
     if (existing) { existing.remove(); }
     if (spacingSize === "0") return;
@@ -48,13 +48,13 @@ function changeWordSpacing(spacingSize) {
     style.id = "newWordSpacing";
     style.textContent = `
         body, body * {
-        word-spacing: ${spacingSize}px !important;
+        word-spacing: ${spacingSize}${unit} !important;
         }
     `;
     document.head.appendChild(style);
 }
 
-function changeLetterSpacing(spacingSize) {
+function changeLetterSpacing(spacingSize, unit = "em") {
     const existing = document.getElementById("newLetterSpacing");
     if (existing) { existing.remove(); }
     if (spacingSize === "0") return;
@@ -62,13 +62,13 @@ function changeLetterSpacing(spacingSize) {
     style.id = "newLetterSpacing";
     style.textContent = `
         body, body * {
-        letter-spacing: ${spacingSize}px !important;
+        letter-spacing: ${spacingSize}${unit} !important;
         }
     `;
     document.head.appendChild(style);
 }
 
-function changeLineSpacing(spacingSize) {
+function changeLineSpacing(spacingSize, unit = "em") {
     const existing = document.getElementById("newLineSpacing");
     if (existing) { existing.remove(); }
     if (spacingSize === "0") return;
@@ -76,7 +76,7 @@ function changeLineSpacing(spacingSize) {
     style.id = "newLineSpacing";
     style.textContent = `
         body, body * {
-        line-height: ${spacingSize}px !important;
+        line-height: ${spacingSize}${unit} !important;
         }
     `;
     document.head.appendChild(style);
@@ -103,16 +103,56 @@ function changeBgColor(bgColor) {
 }
 
 function removeCustomStyles() {
-    const styleIds = ["newFont", "newFontColor", "newFontSize", "newWordSpacing", "newLetterSpacing"];
+    const styleIds = ["newFont", "newFontColor", "newFontSize", "newWordSpacing", "newLetterSpacing", "newLineSpacing"];
     styleIds.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
             element.remove();
         }
     });
+}
 
-    // const bgOverlay = document.getElementById("bgOverlay");
-    // if (bgOverlay) {
-    //     bgOverlay.remove();
-    // }
+function applyCompact(settings) {
+    // changeLetterSpacing();
+    changeWordSpacing(0.1, "em");
+    changeLineSpacing(1.4, "em");
+    changeFont("Georgia");
+    changeFontSize(15.8);
+
+    settings.selectedFont = "Georgia";
+    settings.selectedFontSize = "15.8";
+    settings.selectedWordSpacing = "0.1";
+    settings.selectedLetterSpacing = "";
+    settings.selectedLineSpacing = "1.4";
+    chrome.storage.sync.set(settings);
+}
+
+function applyOpen(settings) {
+    changeLetterSpacing(0.02, "em");
+    changeWordSpacing(0.2, "em");
+    changeLineSpacing(2.2, "em");
+    changeFont("Marriweather");
+    changeFontSize(15.8);
+
+    settings.selectedFont = "Marriweather";
+    settings.selectedFontSize = "15.8";
+    settings.selectedWordSpacing = "0.2";
+    settings.selectedLetterSpacing = "0.02";
+    settings.selectedLineSpacing = "2.2";
+    chrome.storage.sync.set(settings);
+}
+
+function applyRelaxed(settings) {
+    changeLetterSpacing(0.04, "em");
+    changeWordSpacing(0.3, "em");
+    changeLineSpacing(4.5, "em");
+    changeFont("Poppins");
+    changeFontSize(14.1);
+
+    settings.selectedFont = "Poppins";
+    settings.selectedFontSize = "14.1";
+    settings.selectedWordSpacing = "0.3";
+    settings.selectedLetterSpacing = "0.04";
+    settings.selectedLineSpacing = "4.5";
+    chrome.storage.sync.set(settings);
 }

@@ -28,6 +28,19 @@ chrome.storage.sync.get(Object.keys(settings), (saved) => {
 // handle requests
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
+    case "applyRelaxed":
+        applyRelaxed(settings);
+      break;
+    
+
+    case "applyOpen":
+        applyOpen(settings);
+      break;
+    
+    case "applyCompact":
+        applyCompact(settings);
+      break;
+
     case "changeLineSpacing":
         changeLineSpacing(request.size);
         settings.selectedLineSpacing = request.lineSpacing;
