@@ -1,4 +1,4 @@
-export function changeFont(fontFamily) {
+function changeFont(fontFamily) {
     const existing = document.getElementById("newFont");
     if (existing) { existing.remove(); }
     if (fontFamily === "Default") return;
@@ -12,7 +12,7 @@ export function changeFont(fontFamily) {
     document.head.appendChild(style);
 }
 
-export function changeFontColor(fontColor) {
+function changeFontColor(fontColor) {
     const existing = document.getElementById("newFontColor");
     if (existing) { existing.remove(); }
     if (fontColor === "Default") return;
@@ -26,7 +26,7 @@ export function changeFontColor(fontColor) {
     document.head.appendChild(style);
 }
 
-export function changeFontSize(fontSize) {
+function changeFontSize(fontSize) {
     const existing = document.getElementById("newFontSize");
     if (existing) { existing.remove(); }
     if (fontSize === "0") return;

@@ -1,7 +1,3 @@
-import { activateBionicReading, deactivateBionicReading, updateBionicReading } from "./bionic";
-import { changeFont, changeFontColor, changeFontSize } from "./font";
-
-
 let settings = {
   isEnabled: false,
   focusLength: 2,

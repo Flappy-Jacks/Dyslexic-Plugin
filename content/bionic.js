@@ -1,5 +1,5 @@
 // Applies the bionic reading
-export function activateBionicReading(isDarkMode, isDarkMode2, focusLength) {
+function activateBionicReading(isDarkMode, isDarkMode2, focusLength) {
     injectCSS(isDarkMode, isDarkMode2);
     let textNodes = getTextNodes(document.body);
     textNodes.forEach((node) => {
@@ -10,19 +10,19 @@ export function activateBionicReading(isDarkMode, isDarkMode2, focusLength) {
     }); 
 }
 
-export function deactivateBionicReading() {
+function deactivateBionicReading() {
     let bionicSpans = document.querySelectorAll(".bionic-primary, .bionic-secondary");
     bionicSpans.forEach((span) => {
         span.outerHTML = span.textContent;
     });
 }
 
-export function updateBionicReading(isDarkMode, isDarkMode2, focusLength) {
+function updateBionicReading(isDarkMode, isDarkMode2, focusLength) {
     deactivateBionicReading();
     activateBionicReading(isDarkMode, isDarkMode2, focusLength);
 }
 
-export function applyBionicReading(textNode, focusLength) {
+function applyBionicReading(textNode, focusLength) {
     const text = textNode.nodeValue;
     const words = text.split(/(\s+)/); // split with white space as the delimiter. Keep the delimiter
 
