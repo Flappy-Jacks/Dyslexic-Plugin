@@ -80,6 +80,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       settings.isDarkMode2 = request.isDarkMode2;
       updateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength);
       break;
+
+    case "resetSettings":
+      settings = {
+        isEnabled: false,
+        focusLength: 2,
+        isDarkMode: false,
+        isDarkMode2: false,
+        selectedFont: "",
+        selectedFontColor: "",
+        selectedFontSize: "",
+        selectedWordSpacing: "",
+        selectedLetterSpacing: "",
+        selectedBgColor: "",
+      };
+      deactivateBionicReading();
+      
+      removeCustomStyles();
+      
+      break;
+
+    default:
+      console.warn("Unknown action:", request.action);
+      break;
   }
 });
 

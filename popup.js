@@ -21,6 +21,8 @@ const bgColors = [ "Default", "Blue", "Green", "Red"];
 const bgColorSearch = document.getElementById("chooseBgColor");
 const bgColorChoices = document.getElementById("bgColorChoices");
 
+const resetSettings = document.getElementById("resetSettings");
+
 let s = {
   isEnabled: false,
   focusLength: 2,
@@ -199,3 +201,25 @@ darkModeToggle2.addEventListener("change", () => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "toggleDarkMode2", isDarkMode2 });
   });
 });
+
+
+resetSettings.addEventListener("click", () => {
+  chrome.storage.sync.clear(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, { action: "resetSettings" });
+    });
+
+    // toggleSwitch.checked = false;
+    // focusLength.value = 2;
+    // focusLengthValue.textContent = "2";
+    // darkModeToggle.checked = false;
+    // darkModeToggle2.checked = false;
+    // fontSearch.value = "";
+    // fontColorSearch.value = "";
+    // fontSizeSearch.value = "";
+    // wordSpacingSearch.value = "";
+    // letterSpacingSearch.value = "";
+    // bgColorSearch.value = "";
+    window.location.reload();
+  })
+})

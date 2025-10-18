@@ -89,3 +89,9 @@ function changeBgColor(bgColor) {
     overlay.style.opacity = "0.3";
     document.body.appendChild(overlay);
 }
+
+function removeCustomStyles() {
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(element => element.remove());
+
+}
