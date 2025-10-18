@@ -15,6 +15,8 @@ const fontColorSearch = document.getElementById("chooseFontColor");
 const fontColorChoices = document.getElementById("fontColorChoices");
 const fontColors = [ "Default", "Blue", "Green", "Red"];
 const fontSizeSearch = document.getElementById("chooseFontSize");
+const wordSpacingSearch = document.getElementById("chooseWordSpacing");
+const letterSpacingSearch = document.getElementById("chooseLetterSpacing");
 
 let s = {
   isEnabled: false,
@@ -24,6 +26,8 @@ let s = {
   selectedFont: "",
   selectedFontColor: "",
   selectedFontSize: "",
+  selectedWordSpacing: "",
+  selectedLetterSpacing: "",
 };
 
 chrome.storage.sync.get(Object.keys(s), (saved) => {
@@ -37,13 +41,33 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   fontSearch.value = s.selectedFont
   fontColorSearch.value = s.selectedFontColor;
   fontSizeSearch.value = s.selectedFontSize;
+  wordSpacingSearch.value = s.selectedWordSpacing;
+  letterSpacingSearch.value = s.selectedLetterSpacing;
 });
 
-fontSizeSearch.addEventListener("input", () => {
-  const value = fontSizeSearch.value;
-  chrome.storage.sync.set({ selectedFontSize: value });
+letterSpacingSearch.addEventListener("input", () => {
+  const letterSpacing = letterSpacingSearch.value;
+  chrome.storage.sync.set({ selectedLetterSpacing: letterSpacing });
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "changeFontSize", size: value });
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeLetterSpacing", size: letterSpacing });
+  });
+});
+
+
+wordSpacingSearch.addEventListener("input", () => {
+  const wordSpacing = wordSpacingSearch.value;
+  chrome.storage.sync.set({ selectedWordSpacing: wordSpacing });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeWordSpacing", size: wordSpacing });
+  });
+});
+
+
+fontSizeSearch.addEventListener("input", () => {
+  const fontSize = fontSizeSearch.value;
+  chrome.storage.sync.set({ selectedFontSize: fontSize });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeFontSize", size: fontSize });
   });
 });
 

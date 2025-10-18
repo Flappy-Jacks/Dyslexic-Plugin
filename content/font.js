@@ -39,3 +39,31 @@ function changeFontSize(fontSize) {
     `;
     document.head.appendChild(style);
 }
+
+function changeWordSpacing(spacingSize) {
+    const existing = document.getElementById("newWordSpacing");
+    if (existing) { existing.remove(); }
+    if (spacingSize === "0") return;
+    const style = document.createElement("style");
+    style.id = "newWordSpacing";
+    style.textContent = `
+        body, body * {
+        word-spacing: ${spacingSize}px !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+function changeLetterSpacing(spacingSize) {
+    const existing = document.getElementById("newLetterSpacing");
+    if (existing) { existing.remove(); }
+    if (spacingSize === "0") return;
+    const style = document.createElement("style");
+    style.id = "newLetterSpacing";
+    style.textContent = `
+        body, body * {
+        letter-spacing: ${spacingSize}px !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
