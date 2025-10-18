@@ -17,6 +17,9 @@ const fontColors = [ "Default", "Blue", "Green", "Red"];
 const fontSizeSearch = document.getElementById("chooseFontSize");
 const wordSpacingSearch = document.getElementById("chooseWordSpacing");
 const letterSpacingSearch = document.getElementById("chooseLetterSpacing");
+const bgColors = [ "Default", "Blue", "Green", "Red"];
+const bgColorSearch = document.getElementById("chooseBgColor");
+const bgColorChoices = document.getElementById("bgColorChoices");
 
 let s = {
   isEnabled: false,
@@ -28,6 +31,7 @@ let s = {
   selectedFontSize: "",
   selectedWordSpacing: "",
   selectedLetterSpacing: "",
+  selectedBgColor: "",
 };
 
 chrome.storage.sync.get(Object.keys(s), (saved) => {
@@ -43,7 +47,37 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   fontSizeSearch.value = s.selectedFontSize;
   wordSpacingSearch.value = s.selectedWordSpacing;
   letterSpacingSearch.value = s.selectedLetterSpacing;
+  bgColorSearch.value = s.selectedBgColor
 });
+
+function populateBgColorDropdown(filter = "") {
+  bgColorChoices.innerHTML = "";
+  const filteredColors = bgColors.filter(bgColor => bgColor.toLowerCase().includes(filter.toLocaleLowerCase()));
+  filteredColors.forEach(bgColor => {
+    const option = document.createElement("div");
+    option.textContent = bgColor;
+    option.style.cursor = "pointer";
+    option.onclick = () => selectBgColor(bgColor);
+    bgColorChoices.appendChild(option)
+  });
+}
+
+function selectBgColor(bgColor) {
+  bgColorSearch.value = bgColor;
+  bgColorChoices.innerHTML = "";
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, {
+      action: "changeBgColor",
+      color: bgColor
+    });
+  });
+  chrome.storage.sync.set({ selectedBgColor: bgColor });
+}
+
+bgColorSearch.addEventListener("input", () => { populateBgColorDropdown(bgColorSearch.value); });
+bgColorSearch.addEventListener("focus", () => { populateBgColorDropdown(bgColorSearch.value); });
+bgColorSearch.addEventListener("blur", () => { setTimeout(() => bgColorChoices.innerHTML = "", 200); });
+
 
 letterSpacingSearch.addEventListener("input", () => {
   const letterSpacing = letterSpacingSearch.value;

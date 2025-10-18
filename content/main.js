@@ -8,6 +8,7 @@ let settings = {
   selectedFontSize: "",
   selectedWordSpacing: "",
   selectedLetterSpacing: "",
+  selectedBgColor: "",
 };
 
 // Loads user saved settings
@@ -19,11 +20,17 @@ chrome.storage.sync.get(Object.keys(settings), (saved) => {
     if (settings.selectedFontSize) { changeFontSize(settings.selectedFontSize); }
     if (settings.selectedWordSpacing) { changeWordSpacing(settings.selectedWordSpacing); }
     if (settings.selectedLetterSpacing) { changeLetterSpacing(settings.selectedLetterSpacing); }
+    if (settings.selectedBgColor) { changeLetterSpacing(settings.selectedBgColor); }
   });
 
 // handle requests
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
+    case "changeBgColor":
+        changeBgColor(request.color);
+        settings.selectedBgColor = request.color;
+      break;
+
     case "changeLetterSpacing":
         changeLetterSpacing(request.size);
         settings.selectedLetterSpacing = request.size;

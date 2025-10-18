@@ -67,3 +67,25 @@ function changeLetterSpacing(spacingSize) {
     `;
     document.head.appendChild(style);
 }
+
+
+//TODO make persistent even after refresh
+function changeBgColor(bgColor) {
+    const existing = document.getElementById("bgOverlay");
+    if (existing) { existing.remove(); }
+    if (bgColor === "Default") return;
+
+    const overlay = document.createElement("div");
+    overlay.id = "bgOverlay";
+    overlay.style.position = "fixed";
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100vw";
+    overlay.style.height = "100vh";
+    overlay.style.pointerEvents = "none";
+    overlay.style.zIndex = "999";
+    overlay.style.mixBlendMode = "multiply";
+    overlay.style.backgroundColor = `${bgColor}`;
+    overlay.style.opacity = "0.3";
+    document.body.appendChild(overlay);
+}
