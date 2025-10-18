@@ -91,7 +91,16 @@ function changeBgColor(bgColor) {
 }
 
 function removeCustomStyles() {
-    const allElements = document.querySelectorAll('*');
-    allElements.forEach(element => element.remove());
+    const styleIds = ["newFont", "newFontColor", "newFontSize", "newWordSpacing", "newLetterSpacing"];
+    styleIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.remove();
+        }
+    });
 
+    // const bgOverlay = document.getElementById("bgOverlay");
+    // if (bgOverlay) {
+    //     bgOverlay.remove();
+    // }
 }
