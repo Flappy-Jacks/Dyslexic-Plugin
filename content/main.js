@@ -9,6 +9,7 @@ let settings = {
   selectedWordSpacing: "",
   selectedLetterSpacing: "",
   selectedBgColor: "",
+  selectedLineSpacing: "",
 };
 
 // Loads user saved settings
@@ -20,12 +21,18 @@ chrome.storage.sync.get(Object.keys(settings), (saved) => {
     if (settings.selectedFontSize) { changeFontSize(settings.selectedFontSize); }
     if (settings.selectedWordSpacing) { changeWordSpacing(settings.selectedWordSpacing); }
     if (settings.selectedLetterSpacing) { changeLetterSpacing(settings.selectedLetterSpacing); }
-    if (settings.selectedBgColor) { changeLetterSpacing(settings.selectedBgColor); }
+    if (settings.selectedBgColor) { changeBgColor(settings.selectedBgColor); }
+    if (settings.selectedLineSpacing) { changeLineSpacing(settings.selectedLineSpacing); }
   });
 
 // handle requests
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
+    case "changeLineSpacing":
+        changeLineSpacing(request.size);
+        settings.selectedLineSpacing = request.lineSpacing;
+      break;
+
     case "changeBgColor":
         changeBgColor(request.color);
         settings.selectedBgColor = request.color;
@@ -93,6 +100,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         selectedWordSpacing: "",
         selectedLetterSpacing: "",
         selectedBgColor: "",
+        selectedLineSpacing: "",
       };
       deactivateBionicReading();
       

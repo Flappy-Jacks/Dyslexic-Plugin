@@ -20,7 +20,7 @@ const letterSpacingSearch = document.getElementById("chooseLetterSpacing");
 const bgColors = [ "Default", "Blue", "Green", "Red"];
 const bgColorSearch = document.getElementById("chooseBgColor");
 const bgColorChoices = document.getElementById("bgColorChoices");
-
+const lineSpacingSearch = document.getElementById("chooseLineSpacing");
 const resetSettings = document.getElementById("resetSettings");
 
 let s = {
@@ -34,6 +34,7 @@ let s = {
   selectedWordSpacing: "",
   selectedLetterSpacing: "",
   selectedBgColor: "",
+  selectedLineSpacing: "",
 };
 
 chrome.storage.sync.get(Object.keys(s), (saved) => {
@@ -49,7 +50,16 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   fontSizeSearch.value = s.selectedFontSize;
   wordSpacingSearch.value = s.selectedWordSpacing;
   letterSpacingSearch.value = s.selectedLetterSpacing;
-  bgColorSearch.value = s.selectedBgColor
+  bgColorSearch.value = s.selectedBgColor;
+  lineSpacingSearch.value = s.selectedLineSpacing;
+});
+
+lineSpacingSearch.addEventListener("input", () => {
+  const lineSpacing = lineSpacingSearch.value;
+  chrome.storage.sync.set({ selectedLineSpacing: lineSpacing });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeLineSpacing", size: lineSpacing });
+  });
 });
 
 function populateBgColorDropdown(filter = "") {
@@ -79,7 +89,6 @@ function selectBgColor(bgColor) {
 bgColorSearch.addEventListener("input", () => { populateBgColorDropdown(bgColorSearch.value); });
 bgColorSearch.addEventListener("focus", () => { populateBgColorDropdown(bgColorSearch.value); });
 bgColorSearch.addEventListener("blur", () => { setTimeout(() => bgColorChoices.innerHTML = "", 200); });
-
 
 letterSpacingSearch.addEventListener("input", () => {
   const letterSpacing = letterSpacingSearch.value;

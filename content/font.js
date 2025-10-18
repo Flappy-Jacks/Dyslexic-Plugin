@@ -68,8 +68,20 @@ function changeLetterSpacing(spacingSize) {
     document.head.appendChild(style);
 }
 
+function changeLineSpacing(spacingSize) {
+    const existing = document.getElementById("newLineSpacing");
+    if (existing) { existing.remove(); }
+    if (spacingSize === "0") return;
+    const style = document.createElement("style");
+    style.id = "newLineSpacing";
+    style.textContent = `
+        body, body * {
+        line-height: ${spacingSize}px !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
 
-//TODO make persistent even after refresh
 function changeBgColor(bgColor) {
     const existing = document.getElementById("bgOverlay");
     if (existing) { existing.remove(); }
