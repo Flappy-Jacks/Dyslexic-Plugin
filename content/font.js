@@ -1,12 +1,35 @@
+const GOOGLE_FONTS = [
+    'Roboto',
+    'Open Sans',
+    'Lato',
+    'Montserrat',
+    'Oswald',
+    'Source Sans Pro',
+    'Raleway',
+    'PT Sans',
+    'Merriweather',
+    'Nunito',
+    'Poppins',
+    'Playfair Display',
+    'Ubuntu',
+    'Mukta',
+    'Work Sans'
+];
+
 function changeFont(fontFamily) {
     const existing = document.getElementById("newFont");
     if (existing) { existing.remove(); }
     if (fontFamily === "Default") return;
+
+    if (GOOGLE_FONTS.includes(fontFamily)) {
+        importGoogleFont(fontFamily);
+    }
+
     const style = document.createElement("style");
     style.id = "newFont";
     style.textContent = `
-        body, body * {
-        font-family: ${fontFamily} !important;
+        :is(*, body, div, p, span, a, h1, h2, h3, h4, h5, h6, li, td, th, article, section) {
+            font-family: "${fontFamily}", sans-serif !important;
         }
     `;
     document.head.appendChild(style);
@@ -131,10 +154,10 @@ function applyOpen(settings) {
     changeLetterSpacing(0.02, "em");
     changeWordSpacing(0.2, "em");
     changeLineSpacing(2.2, "em");
-    changeFont("Marriweather");
+    changeFont("Merriweather");
     changeFontSize(15.8);
 
-    settings.selectedFont = "Marriweather";
+    settings.selectedFont = "Merriweather";
     settings.selectedFontSize = "15.8";
     settings.selectedWordSpacing = "0.2";
     settings.selectedLetterSpacing = "0.02";
@@ -155,4 +178,21 @@ function applyRelaxed(settings) {
     settings.selectedLetterSpacing = "0.04";
     settings.selectedLineSpacing = "4.5";
     chrome.storage.sync.set(settings);
+}
+
+function importGoogleFont(fontName) {
+    const fontId = `google-font-${fontName.replace(/\s+/g, '-')}`;
+
+    if (document.getElementById(fontId)) {
+        return;
+    }
+
+    const link = document.createElement('link');
+    link.id = fontId;
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:wght@400;700&display=swap`;
+
+    document.head.appendChild(link);
+
+
 }
