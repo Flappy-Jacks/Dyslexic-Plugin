@@ -1,6 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   margin: 10px;
+  width: 200px;
 }
 
 h1 {
@@ -12,7 +13,82 @@ label {
   margin-right: 10px;
 }
 
-input[type="checkbox"] {
+.custom-button {
+  border: none;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.dropdown-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+#chooseFont {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.text-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdown-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.4);
+}
+
+
+#chooseFontColor:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.4);
+}
+
+.dropdown-choices {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 160px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.dropdown-choices div {
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dropdown-choices div:hover {
+  background-color: #f0f0f0;
+}
+
+.dropdown-choices:empty {
+  display: none;
+}
+
+/* input[type="checkbox"] {
   width: 40px;
   height: 20px;
   background-color: #ccc;
@@ -22,7 +98,7 @@ input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-}
+} */
 
 input[type="checkbox"]:checked {
   background-color: #4CAF50;

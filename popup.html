@@ -5,9 +5,9 @@
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
-    <h1>Bionic Reading Extension</h1>
-    <label for="toggleSwitch">Activate Bionic Reading</label>
+    <h1>Dyslexic Friendly Extension</h1>
     <input type="checkbox" id="toggleSwitch">
+    <label for="toggleSwitch">Activate Bionic Reading</label>
     <br>
     
     <label for="focusLength">Focus Length: </label>
@@ -15,53 +15,61 @@
     <span id="focusLengthValue"></span>
     <br>
     
-    <label for="darkModeToggle">Dark Mode Compatibility - Blue</label>
     <input type="checkbox" id="darkModeToggle">
+    <label for="darkModeToggle">Dark Mode Compatibility - Blue</label>
     <br>
     
-    <label for="darkModeToggle2">Dark Mode Compatibility - Pink</label>
     <input type="checkbox" id="darkModeToggle2">
+    <label for="darkModeToggle2">Dark Mode Compatibility - Pink</label>
     <br>
 
-    <label for="chooseFont">Font</label>
-    <input type="text" placeholder="Search.." id="chooseFont">
-    <div id="fontChoices" class="dropdown-choices"></div>
+    <div class="dropdown-group">
+      <label for="chooseFont">Font</label>
+      <input type="text" placeholder="Search.." id="chooseFont" class="text-input">
+      <div id="fontChoices" class="dropdown-choices"></div>
+    </div>
     <br>
 
-    <label for="chooseFontColor">Font Color</label>
-    <input type="text" placeholder="Search.." id="chooseFontColor">
-    <div id="fontColorChoices" class="dropdown-choices"></div>
+    <div class="dropdown-group">
+      <label for="chooseFontColor">Font Color</label>
+      <input type="text" placeholder="Search.." id="chooseFontColor" class="text-input">
+      <div id="fontColorChoices" class="dropdown-choices"></div>
+    </div>
     <br>
 
     <label for="chooseFontSize">Font Size</label>
-    <input type="text" placeholder="Enter Size" id="chooseFontSize">    
+    <input type="text" placeholder="Enter Size" id="chooseFontSize" class="text-input">    
     <br>
+    
 
     <label for="chooseWordSpacing">Word Spacing</label>
-    <input type="text" placeholder="Enter Spacing Size" id="chooseWordSpacing">
+    <input type="text" placeholder="Enter Spacing Size" id="chooseWordSpacing" class="text-input">
     <br>
 
     <label for="chooseLetterSpacing">Letter Spacing</label>
-    <input type="text" placeholder="Enter Spacing Size" id="chooseLetterSpacing">
-    <br>
-
-    <label for="chooseBgColor">Overlay Color</label>
-    <input type="text" placeholder="Enter Spacing Size" id="chooseBgColor">
-    <div id="bgColorChoices" class="dropdown-choices"></div>
+    <input type="text" placeholder="Enter Spacing Size" id="chooseLetterSpacing" class="text-input">
     <br>
 
     <label for="chooseLineSpacing">Line Spacing</label>
-    <input type="text" placeholder="Enter Spacing Size" id="chooseLineSpacing">
+    <input type="text" placeholder="Enter Spacing Size" id="chooseLineSpacing" class="text-input">
     <br>
 
+    <div class="dropdown-group">
+      <label for="chooseBgColor">Overlay Color</label>
+      <input type="text" placeholder="Choose Color" id="chooseBgColor" class="text-input">
+      <div id="bgColorChoices" class="dropdown-choices"></div>
+    <br>
+    </div>
+
     <label for="resetSettings"> Presets </label>
-    <button id="compact"> Compact </button>
-    <button id="open"> Open </button>
-    <button id="relaxed"> Relaxed </button>
+    <br>
+    <button id="compact" class="custom-button"> Compact </button>
+    <button id="open" class="custom-button"> Open </button>
+    <button id="relaxed" class="custom-button"> Relaxed </button>
     <br>
 
     <label for="resetSettings">Reset Settings</label>
-    <button id="resetSettings"> Reset </button>
+    <button id="resetSettings" class="custom-button"> Reset </button>
     <br>
     <script src="popup.js"></script>
   </body>
