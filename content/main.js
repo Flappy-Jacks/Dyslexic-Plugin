@@ -31,7 +31,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     case "applyRelaxed":
         applyRelaxed(settings);
       break;
-    
 
     case "applyOpen":
         applyOpen(settings);

@@ -11,7 +11,7 @@
     <br>
     
     <label for="focusLength">Focus Length: </label>
-    <input type="range" id="focusLength" min="1" max="5" value="2">
+    <input type="range" id="focusLength" min="1" max="5" value="2" class="win10-thumb">
     <span id="focusLengthValue"></span>
     <br>
     
@@ -38,20 +38,24 @@
     <br>
 
     <label for="chooseFontSize">Font Size</label>
-    <input type="text" placeholder="Enter Size" id="chooseFontSize" class="text-input">    
+    <input type="text" placeholder="Enter Size" id="chooseFontSize" class="text-input">
+    <input type="range" id="slideFontSize" min="10" max="50" class="win10-thumb">
     <br>
     
 
     <label for="chooseWordSpacing">Word Spacing</label>
     <input type="text" placeholder="Enter Spacing Size" id="chooseWordSpacing" class="text-input">
+    <input type="range" id="slideWordSpacing" min="0" max="2" step="0.1" class="win10-thumb">
     <br>
 
     <label for="chooseLetterSpacing">Letter Spacing</label>
     <input type="text" placeholder="Enter Spacing Size" id="chooseLetterSpacing" class="text-input">
+    <input type="range" id="slideLetterSpacing" min="0" max="0.2" step="0.01" class="win10-thumb">
     <br>
 
     <label for="chooseLineSpacing">Line Spacing</label>
     <input type="text" placeholder="Enter Spacing Size" id="chooseLineSpacing" class="text-input">
+    <input type="range" id="slideLineSpacing" min="1" max="5" step="0.5" class="win10-thumb">
     <br>
 
     <div class="dropdown-group">

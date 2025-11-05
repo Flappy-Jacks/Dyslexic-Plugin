@@ -15,6 +15,7 @@ const fontColorSearch = document.getElementById("chooseFontColor");
 const fontColorChoices = document.getElementById("fontColorChoices");
 const fontColors = [ "Default", "Blue", "Green", "Red"];
 const fontSizeSearch = document.getElementById("chooseFontSize");
+const fontSizeSlider = document.getElementById("slideFontSize");
 const wordSpacingSearch = document.getElementById("chooseWordSpacing");
 const letterSpacingSearch = document.getElementById("chooseLetterSpacing");
 const bgColors = [ "Default", "Blue", "Green", "Red"];
@@ -26,6 +27,10 @@ const resetSettings = document.getElementById("resetSettings");
 const compactButton = document.getElementById("compact");
 const openButton = document.getElementById("open");
 const relaxedButton = document.getElementById("relaxed");
+
+const wordSpacingSlider = document.getElementById("slideWordSpacing");
+const letterSpacingSlider = document.getElementById("slideLetterSpacing");
+const lineSpacingSlider = document.getElementById("slideLineSpacing");
 
 let s = {
   isEnabled: false,
@@ -52,35 +57,116 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   fontSearch.value = s.selectedFont
   fontColorSearch.value = s.selectedFontColor;
   fontSizeSearch.value = s.selectedFontSize;
+  fontSizeSlider.value = s.selectedFontSize;
   wordSpacingSearch.value = s.selectedWordSpacing;
   letterSpacingSearch.value = s.selectedLetterSpacing;
+  letterSpacingSlider.value = s.selectedLetterSpacing;
   bgColorSearch.value = s.selectedBgColor;
   lineSpacingSearch.value = s.selectedLineSpacing;
+  lineSpacingSlider.value  = s.selectedLineSpacing;
 });
+
+lineSpacingSearch.addEventListener("input", () => {
+  const lineSpacing = lineSpacingSearch.value;
+  lineSpacingSlider.value = lineSpacing;
+  chrome.storage.sync.set({ selectedLineSpacing: lineSpacing });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeLineSpacing", size: lineSpacing });
+  });
+});
+
+lineSpacingSlider.addEventListener("input", () => {
+  const lineSpacing = lineSpacingSlider.value;
+  lineSpacingSearch.value = lineSpacing;
+  chrome.storage.sync.set({ selectedLineSpacing: lineSpacing });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeLineSpacing", size: lineSpacing });
+  });
+});
+
+
+letterSpacingSearch.addEventListener("input", () => {
+  const letterSpacing = letterSpacingSearch.value;
+  letterSpacingSlider.value = letterSpacing
+  chrome.storage.sync.set({ selectedLetterSpacing: letterSpacing });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeLetterSpacing", size: letterSpacing });
+  });
+});
+
+letterSpacingSlider.addEventListener("input", () => {
+  const letterSpacing = letterSpacingSlider.value;
+  letterSpacingSearch.value = letterSpacing
+  chrome.storage.sync.set({ selectedLetterSpacing: letterSpacing });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeLetterSpacing", size: letterSpacing });
+  });
+});
+
+wordSpacingSearch.addEventListener("input", () => {
+  const wordSpacing = wordSpacingSearch.value;
+  wordSpacingSlider.value = wordSpacing;
+  chrome.storage.sync.set({ selectedWordSpacing: wordSpacing });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeWordSpacing", size: wordSpacing });
+  });
+});
+
+
+wordSpacingSlider.addEventListener("input", () => {
+  const wordSpacing = wordSpacingSlider.value;
+  wordSpacingSearch.value = wordSpacing;
+  chrome.storage.sync.set({ selectedFontSize: wordSpacing });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeWordSpacing", size: wordSpacing });
+  });
+});
+
+fontSizeSearch.addEventListener("input", () => {
+  const fontSize = fontSizeSearch.value;
+  fontSizeSlider.value = fontSize;
+  chrome.storage.sync.set({ selectedFontSize: fontSize });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeFontSize", size: fontSize });
+  });
+});
+
+fontSizeSlider.addEventListener("input", () => {
+  const fontSize = fontSizeSlider.value;
+  fontSizeSearch.value = fontSize;
+  chrome.storage.sync.set({ selectedFontSize: fontSize });
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "changeFontSize", size: fontSize });
+  });
+});
+
+function updateSettings() {
+  chrome.storage.sync.get(Object.keys(s), (saved) => {
+    Object.assign(s, saved);
+    fontSizeSearch.value = s.selectedFontSize;
+    fontSizeSlider.value = s.selectedFontSize;
+    fontSearch.value = s.selectedFont;
+    wordSpacingSearch.value = s.selectedWordSpacing;
+    lineSpacingSearch.value = s.selectedLineSpacing;
+    letterSpacingSearch.value = s.selectedLetterSpacing;
+  });
+}
 
 openButton.addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "applyOpen" });
+    chrome.tabs.sendMessage(tabs[0].id, { action: "applyOpen" }, () => { setTimeout(updateSettings, 150); });
   });
 });
 
 relaxedButton.addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "applyRelaxed" });
+    chrome.tabs.sendMessage(tabs[0].id, { action: "applyRelaxed" }, () => { setTimeout(updateSettings, 150); });
   });
 });
 
 compactButton.addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "applyCompact" });
-  });
-});
-
-lineSpacingSearch.addEventListener("input", () => {
-  const lineSpacing = lineSpacingSearch.value;
-  chrome.storage.sync.set({ selectedLineSpacing: lineSpacing });
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "changeLineSpacing", size: lineSpacing });
+    chrome.tabs.sendMessage(tabs[0].id, { action: "applyCompact" }, () => { setTimeout(updateSettings, 150); });
   });
 });
 
@@ -111,32 +197,6 @@ function selectBgColor(bgColor) {
 bgColorSearch.addEventListener("input", () => { populateBgColorDropdown(bgColorSearch.value); });
 bgColorSearch.addEventListener("focus", () => { populateBgColorDropdown(bgColorSearch.value); });
 bgColorSearch.addEventListener("blur", () => { setTimeout(() => bgColorChoices.innerHTML = "", 200); });
-
-letterSpacingSearch.addEventListener("input", () => {
-  const letterSpacing = letterSpacingSearch.value;
-  chrome.storage.sync.set({ selectedLetterSpacing: letterSpacing });
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "changeLetterSpacing", size: letterSpacing });
-  });
-});
-
-
-wordSpacingSearch.addEventListener("input", () => {
-  const wordSpacing = wordSpacingSearch.value;
-  chrome.storage.sync.set({ selectedWordSpacing: wordSpacing });
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "changeWordSpacing", size: wordSpacing });
-  });
-});
-
-
-fontSizeSearch.addEventListener("input", () => {
-  const fontSize = fontSizeSearch.value;
-  chrome.storage.sync.set({ selectedFontSize: fontSize });
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "changeFontSize", size: fontSize });
-  });
-});
 
 function populateFontColorDropdown(filter = "") {
   fontColorChoices.innerHTML = "";
