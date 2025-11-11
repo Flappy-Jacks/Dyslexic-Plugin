@@ -166,6 +166,7 @@ function applyOpen(settings) {
 }
 
 function applyRelaxed(settings) {
+    console.log("applied Relaxed");
     changeLetterSpacing(0.04, "em");
     changeWordSpacing(0.3, "em");
     changeLineSpacing(4.5, "em");

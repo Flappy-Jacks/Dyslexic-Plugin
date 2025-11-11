@@ -160,6 +160,21 @@ input[type="range"].win10-thumb {
 	input[type="range"].win10-thumb {
 		color: #3a86ff;
 	}
+
+  h1 {
+    font-size: 24px;
+    color: #e0e0e0;
+  }
+
+  label {
+    display: inline-block;
+    margin-right: 10px;
+    color: #e0e0e0;
+  }
+
+  pre {
+    color: #e0e0e0;
+  }
 }
 
 /* === range commons === */

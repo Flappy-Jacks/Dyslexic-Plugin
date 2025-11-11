@@ -119,6 +119,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       removeCustomStyles();
       
       break;
+    
+    case "testNLP":
+      (async function () {
+        const { classify } = await import(chrome.runtime.getURL('content/keyword-extractor.js'));
+        const sampleText = "Barack Obama was the 44th President of the United States.";
+        console.log("Calling classify...");
+        const result = await classify(sampleText);
+        console.log("NLP Result:", result);
+        const outputElement = document.getElementById("output");
+        sendResponse({ result: JSON.stringify(result) });
+      })();
+      return true;
 
     default:
       console.warn("Unknown action:", request.action);

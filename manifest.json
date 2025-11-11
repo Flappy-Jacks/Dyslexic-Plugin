@@ -17,8 +17,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/main.js", "content/font.js", "content/bionic.js"]
-    }
+      "js": ["content/keyword-extractor.js", "content/main.js", "content/font.js", "content/bionic.js"]    }
   ],
   "host_permissions": ["*://*/*"]
 }

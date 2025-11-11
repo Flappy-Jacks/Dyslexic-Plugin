@@ -1,3 +1,5 @@
+// import test = require("node:test");
+
 const toggleSwitch = document.getElementById("toggleSwitch");
 const focusLength = document.getElementById("focusLength");
 const focusLengthValue = document.getElementById("focusLengthValue");
@@ -31,6 +33,9 @@ const relaxedButton = document.getElementById("relaxed");
 const wordSpacingSlider = document.getElementById("slideWordSpacing");
 const letterSpacingSlider = document.getElementById("slideLetterSpacing");
 const lineSpacingSlider = document.getElementById("slideLineSpacing");
+
+const testNLPButton = document.getElementById("testNLP");
+const output = document.getElementById("output");
 
 let s = {
   isEnabled: false,
@@ -299,5 +304,30 @@ resetSettings.addEventListener("click", () => {
       chrome.tabs.sendMessage(tabs[0].id, { action: "resetSettings" });
     });
     window.location.reload();
-  })
-})
+  });
+});
+
+testNLPButton.addEventListener("click", () => {
+  // output.textContent = 'Loading model and running inference...';
+
+  // // Use a preset text
+  // const text = "Barack Obama was born in Hawaii.";
+
+  // const result = await classify(text);
+
+  // if (result) {
+  //   output.textContent = JSON.stringify(result, null, 2);
+  // } else {
+  //   output.textContent = 'Error running classification.';
+  // }
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "testNLP" }, (response) => {
+      console.log("Testing...");
+      if (response) {
+        output.textContent = JSON.stringify(response, null, 2);
+      } else {
+        output.textContent = 'Error running classification.';
+      } 
+    });
+  });
+});
