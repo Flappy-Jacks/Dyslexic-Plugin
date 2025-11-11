@@ -121,16 +121,32 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       break;
     
     case "testNLP":
-      (async function () {
-        const { classify } = await import(chrome.runtime.getURL('content/keyword-extractor.js'));
-        const sampleText = "Barack Obama was the 44th President of the United States.";
-        console.log("Calling classify...");
-        const result = await classify(sampleText);
-        console.log("NLP Result:", result);
-        const outputElement = document.getElementById("output");
-        sendResponse({ result: JSON.stringify(result) });
-      })();
-      return true;
+      (async () => {
+        try {
+      console.log('📨 testNLP action received');
+      
+      const sampleText = "Barack Obama was the 44th President of the United States.";
+      console.log('📝 Testing with:', sampleText);
+      
+      // classify is already globally available from keyword-extractor.js
+      // No need to import!
+      if (typeof classify === 'undefined') {
+        throw new Error('classify function not found. Is keyword-extractor.js loaded?');
+      }
+      
+      console.log('🔄 Calling classify...');
+      const result = await classify(sampleText);
+      
+      console.log('✅ Got result:', result);
+      sendResponse({ success: true, result: result });
+      
+    } catch (err) {
+      console.error('❌ Error in testNLP:', err);
+      sendResponse({ success: false, error: err.message });
+    }
+  })();
+  
+  return true;
 
     default:
       console.warn("Unknown action:", request.action);
