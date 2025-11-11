@@ -1,4 +1,3 @@
-// Applies the bionic reading
 function activateBionicReading(isDarkMode, isDarkMode2, focusLength) {
     injectCSS(isDarkMode, isDarkMode2);
     let textNodes = getTextNodes(document.body);

@@ -32,6 +32,10 @@ const wordSpacingSlider = document.getElementById("slideWordSpacing");
 const letterSpacingSlider = document.getElementById("slideLetterSpacing");
 const lineSpacingSlider = document.getElementById("slideLineSpacing");
 
+const fontTab = document.getElementById("fontTabButton");
+const spacingTab = document.getElementById("spacingTabButton");
+const bionicTab = document.getElementById("bionicTabButton");
+
 let s = {
   isEnabled: false,
   focusLength: 2,
@@ -299,5 +303,27 @@ resetSettings.addEventListener("click", () => {
       chrome.tabs.sendMessage(tabs[0].id, { action: "resetSettings" });
     });
     window.location.reload();
-  })
-})
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tabButtons = document.querySelectorAll(".tab-links");
+  tabButtons.forEach(button => {
+    button.addEventListener("click", event => {
+      const tabName = button.dataset.tab;
+      openTab(event, tabName);
+    });
+  });
+});
+
+function openTab(evt, tabName) {
+  if (evt.currentTarget.classList.contains("active")) {
+    document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+    document.querySelectorAll(".tab-links").forEach(btn => btn.classList.remove("active"));
+    return;
+  }
+  document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+  document.querySelectorAll(".tab-links").forEach(btn => btn.classList.remove("active"));
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
+}
