@@ -4,7 +4,7 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
-                main: 'content/contentScript.js'
+                main: 'content/main.js'
             },
             output: {
                 entryFileNames: 'content.bundle.js'
