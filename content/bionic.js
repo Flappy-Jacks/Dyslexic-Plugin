@@ -97,3 +97,49 @@ export function injectCSS(isDarkMode, isDarkMode2) {
     styleElement.innerHTML = styles;
     document.head.appendChild(styleElement);
 }
+
+export async function highlightKeywordsBionically(keywords, focusLength = 2) {
+  if (!keywords || keywords.length === 0) {
+    console.warn("⚠️ No keywords provided for bionic highlighting.");
+    return;
+  }
+
+  // Don't re-import, these are already in this module
+  injectCSS(false, false); // Use current dark mode settings
+  const textNodes = getTextNodes(document.body);
+
+  // Create regex that matches whole words only
+  const keywordRegex = new RegExp(`\\b(${keywords.join("|")})\\b`, "gi");
+
+  textNodes.forEach((node) => {
+    const text = node.textContent;
+    if (!keywordRegex.test(text)) return;
+
+    // Reset regex for replace
+    keywordRegex.lastIndex = 0;
+    
+    // const newText = text.replace(keywordRegex, (match) => {
+    //   // Apply bionic formatting to just this keyword
+    //   const tempNode = document.createTextNode(match);
+    //   return applyBionicReading(tempNode, focusLength);
+    // });
+
+    const newText = text.replace(keywordRegex, (match) => {
+      // Determine halfway point of the word
+      const halfIndex = Math.ceil(match.length / 2);
+
+      // Split into bold (bionic) and normal halves
+      const firstHalf = match.slice(0, halfIndex);
+      const secondHalf = match.slice(halfIndex);
+
+      // Wrap in your CSS classes
+      return `<span class="bionic-primary">${firstHalf}</span>${secondHalf}`;
+    });
+
+    const span = document.createElement("span");
+    span.innerHTML = newText;
+    node.parentNode.replaceChild(span, node);
+  });
+
+  console.log("✨ Bionic Reading applied to extracted keywords!");
+}

@@ -5,8 +5,10 @@ const embeddingsCache = new Map();
 
 async function loadClassifier() {
   if (_classifier) return _classifier;
-  console.log("Loading TinyBERT model...");
-  _classifier = await pipeline('feature-extraction', 'Xenova/bert-base-uncased');
+  // console.log("Loading TinyBERT model...");
+  // _classifier = await pipeline('feature-extraction', 'Xenova/bert-base-uncased');
+  console.log("Loading mpnet model...");
+  _classifier = await pipeline('feature-extraction', 'Xenova/all-mpnet-base-v2');
   console.log("Model loaded!");
   return _classifier;
 }
