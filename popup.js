@@ -156,6 +156,12 @@ function updateSettings() {
   });
 }
 
+document.getElementById("test-button").addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "testNLP" }, () => { setTimeout(updateSettings, 150); });
+  });
+});
+
 openButton.addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "applyOpen" }, () => { setTimeout(updateSettings, 150); });
