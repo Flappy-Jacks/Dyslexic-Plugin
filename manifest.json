@@ -20,7 +20,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["dist/assets/*"],
+      "resources": ["*.js", "dist/*.js", "dist/assets/*.js", "assets/*"],
       "matches": ["<all_urls>"]
     }
   ],

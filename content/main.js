@@ -53,15 +53,43 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           console.log("📄 Extracting text from webpage...");
           const pageText = document.body.innerText;
 
-          const { extractImportantWords } = await import("./nlp.js");
-          const importantWords = await extractImportantWords(pageText, 20);
+          const { extractImportantWordsAdaptive } = await import("./nlp-adaptive.js");
+          const importantWords = await extractImportantWordsAdaptive(pageText, 20);
           console.log("🏷️ Important words:", importantWords);
+
+          // const { extractImportantWordsHybrid } = await import("./nlp-hybrid.js");
+          // const importantWords = await extractImportantWordsHybrid(pageText, 20);
+          // console.log("🏷️ Important words:", importantWords);
 
           // Import the bionic highlighting function
           const { highlightKeywordsBionically } = await import("./bionic.js");
           
           // Apply bionic reading to the extracted keywords
           await highlightKeywordsBionically(importantWords, settings.focusLength);
+
+          sendResponse({ ok: true, words: importantWords });
+        } catch (err) {
+          console.error("❌ NLP error:", err);
+          sendResponse({ ok: false, error: err.message });
+        }
+      })();
+      return true;
+
+      case "colorizeKeywords":
+      (async () => {
+        try {
+          console.log("📄 Extracting text from webpage...");
+          const pageText = document.body.innerText;
+
+          const { extractImportantWords } = await import("./nlp.js");
+          const importantWords = await extractImportantWords(pageText, 20);
+          console.log("🏷️ Important words:", importantWords);
+
+          // Import the bionic highlighting function
+          const { colorizeKeywords } = await import("./bionic.js");
+          
+          // Apply bionic reading to the extracted keywords
+          await colorizeKeywords(importantWords, settings.focusLength);
 
           sendResponse({ ok: true, words: importantWords });
         } catch (err) {

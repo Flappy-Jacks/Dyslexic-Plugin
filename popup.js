@@ -168,6 +168,12 @@ document.getElementById("apply-bionic-reading").addEventListener("click", () => 
   });
 });
 
+document.getElementById("colorize-keywords").addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, { action: "colorizeKeywords" }, () => { setTimeout(updateSettings, 150); });
+  });
+});
+
 openButton.addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "applyOpen" }, () => { setTimeout(updateSettings, 150); });
