@@ -156,11 +156,11 @@ function updateSettings() {
   });
 }
 
-document.getElementById("test-button").addEventListener("click", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "testNLP" }, () => { setTimeout(updateSettings, 150); });
-  });
-});
+// document.getElementById("test-button").addEventListener("click", () => {
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     chrome.tabs.sendMessage(tabs[0].id, { action: "testNLP" }, () => { setTimeout(updateSettings, 150); });
+//   });
+// });
 
 document.getElementById("apply-bionic-reading").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

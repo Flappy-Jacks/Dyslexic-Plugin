@@ -31,21 +31,21 @@ chrome.storage.sync.get(Object.keys(settings), (saved) => {
 // handle requests
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
-    case "testNLP":
-      (async () => {
-        const text = "Exercise can help prevent excess weight gain or help you keep off lost weight. When you take part in physical activity, you burn calories. The more intense the activity, the more calories you burn. Regular trips to the gym are great, but don't worry if you can't find a large chunk of time to exercise every day. Any amount of activity is better than none. To gain the benefits of exercise, just get more active throughout your day. For example, take the stairs instead of the elevator or rev up your household chores. Consistency is key.";
-        console.log("TEXT: " + text);
-        try {
-          const { extractImportantWords } = await import("./nlp.js");
-          const importantWords = await extractImportantWords(text, 20);
-          console.log("Keywords:", importantWords);
-          sendResponse({ ok: true, words: importantWords });
-        } catch (err) {
-          console.error("NLP error:", err);
-          sendResponse({ ok: false, error: err.message });
-        }
-      })();
-      return true;
+    // case "testNLP":
+    //   (async () => {
+    //     const text = "Exercise can help prevent excess weight gain or help you keep off lost weight. When you take part in physical activity, you burn calories. The more intense the activity, the more calories you burn. Regular trips to the gym are great, but don't worry if you can't find a large chunk of time to exercise every day. Any amount of activity is better than none. To gain the benefits of exercise, just get more active throughout your day. For example, take the stairs instead of the elevator or rev up your household chores. Consistency is key.";
+    //     console.log("TEXT: " + text);
+    //     try {
+    //       const { extractImportantWords } = await import("./nlp.js");
+    //       const importantWords = await extractImportantWords(text, 20);
+    //       console.log("Keywords:", importantWords);
+    //       sendResponse({ ok: true, words: importantWords });
+    //     } catch (err) {
+    //       console.error("NLP error:", err);
+    //       sendResponse({ ok: false, error: err.message });
+    //     }
+    //   })();
+    //   return true;
     
     case "applyBionicReading":
       (async () => {
