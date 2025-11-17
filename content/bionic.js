@@ -191,7 +191,7 @@ export async function colorizeKeywords(keywords, focusLength = 2) {
   styleElement.textContent = `
     .bionic-keyword {
       font-weight: bold;
-      color: #007BFF !important; /* bright blue */
+      color: #C70000 !important; /* bright red */
     }
   `;
   document.head.appendChild(styleElement);
