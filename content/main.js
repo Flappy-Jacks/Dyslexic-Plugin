@@ -53,8 +53,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           console.log("📄 Extracting text from webpage...");
           const pageText = document.body.innerText;
 
-          const { extractImportantWordsAdaptive } = await import("./nlp-adaptive.js");
-          const importantWords = await extractImportantWordsAdaptive(pageText, 20);
+          const { extractImportantWords } = await import("./nlp-tfidf.js");
+          const importantWords = await extractImportantWords(pageText, 2000);
           console.log("🏷️ Important words:", importantWords);
 
           // const { extractImportantWordsHybrid } = await import("./nlp-hybrid.js");
@@ -81,8 +81,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           console.log("📄 Extracting text from webpage...");
           const pageText = document.body.innerText;
 
-          const { extractImportantWords } = await import("./nlp.js");
-          const importantWords = await extractImportantWords(pageText, 20);
+          const { extractImportantWords } = await import("./nlp-tfidf.js");
+          const importantWords = await extractImportantWords(pageText, 2000);
           console.log("🏷️ Important words:", importantWords);
 
           // Import the bionic highlighting function
