@@ -189,7 +189,7 @@ export async function colorizeKeywords(keywords, focusLength = 2) {
   injectCSS(false, false); // Use current dark mode settings
   const styleElement = document.createElement('style');
   styleElement.textContent = `
-    .bionic-keyword {
+    .colorize-keyword {
       font-weight: bold;
       color: #C70000 !important; /* bright red */
     }
@@ -207,7 +207,7 @@ export async function colorizeKeywords(keywords, focusLength = 2) {
     keywordRegex.lastIndex = 0;
 
     const newText = text.replace(keywordRegex, (match) => {
-      return `<span class="bionic-keyword">${match}</span>`;
+      return `<span class="colorize-keyword">${match}</span>`;
     });
 
     const span = document.createElement("span");
@@ -216,4 +216,11 @@ export async function colorizeKeywords(keywords, focusLength = 2) {
   });
 
   console.log("✨ Colorized extracted keywords!");
+}
+
+export function deactivateColorizeKeywords() {
+    let colorizeSpans = document.querySelectorAll(".colorize-keyword");
+    colorizeSpans.forEach((span) => {
+        span.outerHTML = span.textContent;
+    });
 }

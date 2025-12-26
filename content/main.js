@@ -1,5 +1,5 @@
 import { applyCompact, applyOpen, applyRelaxed, changeBgColor, changeFontColor, changeFont, changeFontSize, changeLetterSpacing, changeLineSpacing, changeWordSpacing, removeCustomStyles } from "./font";
-import { activateBionicReading, deactivateBionicReading, updateBionicReading, getTextNodes } from "./bionic";
+import { activateBionicReading, deactivateBionicReading, updateBionicReading, getTextNodes, deactivateColorizeKeywords } from "./bionic";
 
 let settings = {
   isEnabled: false,
@@ -186,6 +186,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         selectedLineSpacing: "",
       };
       deactivateBionicReading();
+      deactivateColorizeKeywords();
       removeCustomStyles();
       break;
 
