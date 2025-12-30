@@ -440,9 +440,21 @@ function renderPresets() {
 
       const nameSpan = document.createElement("span");
       nameSpan.textContent = preset.name;
-      nameSpan.style.cursor = "pointer";
       nameSpan.style.fontWeight = "bold";
-      nameSpan.onclick = () => applyPreset(preset.settings);
+      nameSpan.style.flexGrow = "1"; // Pushes buttons to the right
+      nameSpan.style.marginRight = "10px";
+      nameSpan.style.overflow = "hidden"; // Prevents long names from breaking layout
+      nameSpan.style.textOverflow = "ellipsis";
+
+      const btnGroup = document.createElement("div");
+      btnGroup.style.display = "flex";
+      btnGroup.style.gap = "5px"; // Space between buttons
+
+      // 4. The NEW "Load" Button
+      const loadBtn = document.createElement("button");
+      loadBtn.textContent = "Load";
+      // loadBtn.style.cursor = "pointer";
+      loadBtn.onclick = () => applyPreset(preset.settings);
 
       const delBtn = document.createElement("button");
       delBtn.textContent = "Delete";
