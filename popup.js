@@ -1,3 +1,5 @@
+// import { RobertaForMaskedLM } from "@xenova/transformers";
+
 const toggleSwitch = document.getElementById("toggleSwitch");
 const focusLength = document.getElementById("focusLength");
 const focusLengthValue = document.getElementById("focusLengthValue");
@@ -36,6 +38,12 @@ const fontTab = document.getElementById("fontTabButton");
 const spacingTab = document.getElementById("spacingTabButton");
 const bionicTab = document.getElementById("bionicTabButton");
 
+const presetNameInput = document.getElementById("newPresetName");
+const savePresetButton = document.getElementById("savePreset");
+const presetListContainer = document.getElementById("presetList");
+
+if(savePresetButton) savePresetButton.addEventListener("click", saveNewPreset);
+
 let s = {
   isEnabled: false,
   focusLength: 2,
@@ -68,11 +76,16 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   bgColorSearch.value = s.selectedBgColor;
   lineSpacingSearch.value = s.selectedLineSpacing;
   lineSpacingSlider.value  = s.selectedLineSpacing;
+
+  renderPresets();
 });
 
 lineSpacingSearch.addEventListener("input", () => {
   const lineSpacing = lineSpacingSearch.value;
   lineSpacingSlider.value = lineSpacing;
+
+  s.selectedLineSpacing = lineSpacing; // <--- ADD THIS
+
   chrome.storage.sync.set({ selectedLineSpacing: lineSpacing });
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "changeLineSpacing", size: lineSpacing });
@@ -82,6 +95,9 @@ lineSpacingSearch.addEventListener("input", () => {
 lineSpacingSlider.addEventListener("input", () => {
   const lineSpacing = lineSpacingSlider.value;
   lineSpacingSearch.value = lineSpacing;
+
+  s.selectedLineSpacing = lineSpacing; // <--- ADD THIS
+
   chrome.storage.sync.set({ selectedLineSpacing: lineSpacing });
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "changeLineSpacing", size: lineSpacing });
@@ -92,6 +108,9 @@ lineSpacingSlider.addEventListener("input", () => {
 letterSpacingSearch.addEventListener("input", () => {
   const letterSpacing = letterSpacingSearch.value;
   letterSpacingSlider.value = letterSpacing
+
+  s.selectedLetterSpacing = letterSpacingSearch.value; // <--- ADD THIS
+
   chrome.storage.sync.set({ selectedLetterSpacing: letterSpacing });
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "changeLetterSpacing", size: letterSpacing });
@@ -110,6 +129,9 @@ letterSpacingSlider.addEventListener("input", () => {
 wordSpacingSearch.addEventListener("input", () => {
   const wordSpacing = wordSpacingSearch.value;
   wordSpacingSlider.value = wordSpacing;
+  
+  s.selectedWordSpacing = wordSpacingSearch.value; // <--- ADD THIS
+
   chrome.storage.sync.set({ selectedWordSpacing: wordSpacing });
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "changeWordSpacing", size: wordSpacing });
@@ -129,6 +151,9 @@ wordSpacingSlider.addEventListener("input", () => {
 fontSizeSearch.addEventListener("input", () => {
   const fontSize = fontSizeSearch.value;
   fontSizeSlider.value = fontSize;
+
+  s.selectedFontSize = fontSizeSearch.value; // <--- ADD THIS
+
   chrome.storage.sync.set({ selectedFontSize: fontSize });
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, { action: "changeFontSize", size: fontSize });
@@ -206,6 +231,9 @@ function populateBgColorDropdown(filter = "") {
 
 function selectBgColor(bgColor) {
   bgColorSearch.value = bgColor;
+
+  s.selectedBgColor = bgColor; // <--- ADD THIS
+
   bgColorChoices.innerHTML = "";
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, {
@@ -234,6 +262,9 @@ function populateFontColorDropdown(filter = "") {
 
 function selectFontColor(fontColor) {
   fontColorSearch.value = fontColor;
+
+  s.selectedFontColor = fontColor; // <--- ADD THIS
+
   fontColorChoices.innerHTML = "";
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, {
@@ -262,6 +293,9 @@ function populateFontDropdown(filter = "") {
 
 function selectFont(font) {
   fontSearch.value = font;
+
+  s.selectedFont = font; // <--- ADD THIS
+  
   fontChoices.innerHTML = "";
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, {
@@ -278,8 +312,10 @@ fontSearch.addEventListener("blur", () => { setTimeout(() => fontChoices.innerHT
 
 toggleSwitch.addEventListener("change", () => {
   const isEnabled = toggleSwitch.checked;
-  chrome.storage.sync.set({ isEnabled });
 
+  s.isEnabled = isEnabled; // <--- ADD THIS
+
+  chrome.storage.sync.set({ isEnabled });
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.tabs.sendMessage(tabs[0].id, {
       action: isEnabled ? "activateBionicReading" : "deactivateBionicReading",
@@ -289,6 +325,9 @@ toggleSwitch.addEventListener("change", () => {
 
 focusLength.addEventListener("input", () => {
   const value = focusLength.value;
+  
+  s.focusLength = value; // <--- ADD THIS
+
   focusLengthValue.textContent = value;
   chrome.storage.sync.set({ focusLength: value });
 
@@ -299,6 +338,9 @@ focusLength.addEventListener("input", () => {
 
 darkModeToggle.addEventListener("change", () => {
   const isDarkMode = darkModeToggle.checked;
+
+  s.isDarkMode = isDarkMode; // <--- ADD THIS
+
   chrome.storage.sync.set({ isDarkMode });
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -308,6 +350,9 @@ darkModeToggle.addEventListener("change", () => {
 
 darkModeToggle2.addEventListener("change", () => {
   const isDarkMode2 = darkModeToggle2.checked;
+
+  s.isDarkMode2 = isDarkMode2; // <--- ADD THIS
+
   chrome.storage.sync.set({ isDarkMode2 });
 
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -315,12 +360,47 @@ darkModeToggle2.addEventListener("change", () => {
   });
 });
 
+// resetSettings.addEventListener("click", () => {
+//   chrome.storage.sync.clear(() => {
+//     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//       chrome.tabs.sendMessage(tabs[0].id, { action: "resetSettings" });
+//     });
+//     window.location.reload();
+//   });
+// });
+
 resetSettings.addEventListener("click", () => {
-  chrome.storage.sync.clear(() => {
+  // 1. Define what "Default" looks like
+  const defaultSettings = {
+    isEnabled: false,
+    focusLength: 2,
+    isDarkMode: false,
+    isDarkMode2: false,
+    selectedFont: "",
+    selectedFontColor: "",
+    selectedFontSize: "",
+    selectedWordSpacing: "",
+    selectedLetterSpacing: "",
+    selectedBgColor: "",
+    selectedLineSpacing: "",
+    // Note: We intentionally DO NOT include 'userPresets' here so it stays untouched
+  };
+
+  // 2. Overwrite only these specific keys in storage
+  chrome.storage.sync.set(defaultSettings, () => {
+    
+    // 3. Update the local 's' state so the popup doesn't need a reload
+    Object.assign(s, defaultSettings);
+
+    // 4. Tell the content script to visually reset
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "resetSettings" });
+      if(tabs[0]) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "resetSettings" });
+      }
     });
-    window.location.reload();
+
+    // 5. Reload the popup UI to reflect defaults (snap sliders back to 0)
+    window.location.reload(); 
   });
 });
 
@@ -344,4 +424,101 @@ function openTab(evt, tabName) {
   document.querySelectorAll(".tab-links").forEach(btn => btn.classList.remove("active"));
   document.getElementById(tabName).classList.add("active");
   evt.currentTarget.classList.add("active");
+}
+
+function renderPresets() {
+  chrome.storage.sync.get("userPresets", (data) => {
+    const presets = data.userPresets || [];
+    presetListContainer.innerHTML = "";
+
+    presets.forEach((preset, index) => {
+      const row = document.createElement("div");
+      row.className = "preset-row";
+      row.style.display = "flex";
+      row.style.justifyContent = "space-between";
+      row.style.marginBottom = "5px";
+
+      const nameSpan = document.createElement("span");
+      nameSpan.textContent = preset.name;
+      nameSpan.style.cursor = "pointer";
+      nameSpan.style.fontWeight = "bold";
+      nameSpan.onclick = () => applyPreset(preset.settings);
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "Delete";
+      delBtn.style.marginLeft = "10px";
+      delBtn.onclick = () => deletePreset(index);
+      
+      row.appendChild(nameSpan);
+      row.appendChild(delBtn);
+      presetListContainer.appendChild(row);
+    });
+  });
+}
+
+function saveNewPreset() {
+  const name = presetNameInput.value.trim() || 'New Preset';
+
+  chrome.storage.sync.get("userPresets", (data) => {
+    const presets = data.userPresets || [];
+    const newPreset = {
+      name: name,
+      settings: { ...s }
+    };
+    presets.push(newPreset);
+
+    chrome.storage.sync.set({ userPresets: presets }, () => {
+      presetNameInput.value = "";
+      renderPresets();
+    });
+  })
+}
+
+function deletePreset(index) {
+  chrome.storage.sync.get("userPresets", (data) => {
+    const presets = data.userPresets || [];
+    presets.splice(index, 1);
+    chrome.storage.sync.set({ userPresets: presets }, renderPresets);
+  });
+}
+
+function applyPreset(presetSettings) {
+  // 1. Update the global state object 's' in popup.js
+  Object.assign(s, presetSettings);
+  chrome.storage.sync.set(s);
+
+  // 2. Force the Popup UI elements to match the new settings
+  // (This ensures that if you reopen the popup, the sliders look correct)
+  if(toggleSwitch) toggleSwitch.checked = s.isEnabled;
+  if(focusLength) focusLength.value = s.focusLength;
+  if(focusLengthValue) focusLengthValue.textContent = s.focusLength;
+  if(darkModeToggle) darkModeToggle.checked = s.isDarkMode;
+  if(darkModeToggle2) darkModeToggle2.checked = s.isDarkMode2;
+  
+  if(fontSearch) fontSearch.value = s.selectedFont;
+  if(fontColorSearch) fontColorSearch.value = s.selectedFontColor;
+  
+  if(fontSizeSearch) fontSizeSearch.value = s.selectedFontSize;
+  if(fontSizeSlider) fontSizeSlider.value = s.selectedFontSize;
+  
+  if(wordSpacingSearch) wordSpacingSearch.value = s.selectedWordSpacing;
+  if(wordSpacingSlider) wordSpacingSlider.value = s.selectedWordSpacing;
+  
+  if(letterSpacingSearch) letterSpacingSearch.value = s.selectedLetterSpacing;
+  if(letterSpacingSlider) letterSpacingSlider.value = s.selectedLetterSpacing;
+  
+  if(lineSpacingSearch) lineSpacingSearch.value = s.selectedLineSpacing;
+  if(lineSpacingSlider) lineSpacingSlider.value = s.selectedLineSpacing;
+  
+  if(bgColorSearch) bgColorSearch.value = s.selectedBgColor;
+
+  // 3. Send the signal to main.js
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]) {
+      chrome.tabs.sendMessage(tabs[0].id, { 
+        action: "applyAllSettings", 
+        settings: s 
+      });
+    }
+  });
 }

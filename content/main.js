@@ -185,11 +185,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         selectedBgColor: "",
         selectedLineSpacing: "",
       };
-      deactivateBionicReading();
+      deactivateBionicReading();  
       deactivateColorizeKeywords();
       removeCustomStyles();
       break;
 
+    case "applyAllSettings":
+      const newS = request.settings;
+      Object.assign(settings, newS);
+
+      // Apply all visual styles immediately using the imported functions
+      if (newS.selectedFont) changeFont(newS.selectedFont);
+      if (newS.selectedFontColor) changeFontColor(newS.selectedFontColor);
+      if (newS.selectedFontSize) changeFontSize(newS.selectedFontSize);
+      if (newS.selectedWordSpacing) changeWordSpacing(newS.selectedWordSpacing);
+      if (newS.selectedLetterSpacing) changeLetterSpacing(newS.selectedLetterSpacing);
+      if (newS.selectedBgColor) changeBgColor(newS.selectedBgColor);
+      if (newS.selectedLineSpacing) changeLineSpacing(newS.selectedLineSpacing);
+
+      // Handle Bionic toggle
+      if (newS.isEnabled) {
+        activateBionicReading(newS.isDarkMode, newS.isDarkMode2, newS.focusLength);
+      } else {
+        deactivateBionicReading();
+      }
+      sendResponse({ ok: true });
+      break;
+      
     default:
       console.warn("Unknown action:", request.action);
       break;
