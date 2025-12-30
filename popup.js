@@ -445,6 +445,7 @@ function renderPresets() {
       nameSpan.style.marginRight = "10px";
       nameSpan.style.overflow = "hidden"; // Prevents long names from breaking layout
       nameSpan.style.textOverflow = "ellipsis";
+      nameSpan.style.alignContent = "center";
 
       const btnGroup = document.createElement("div");
       btnGroup.style.display = "flex";
@@ -453,15 +454,18 @@ function renderPresets() {
       // 4. The NEW "Load" Button
       const loadBtn = document.createElement("button");
       loadBtn.textContent = "Load";
-      // loadBtn.style.cursor = "pointer";
+      loadBtn.style.cursor = "pointer";
+      loadBtn.className = "reset-button";
       loadBtn.onclick = () => applyPreset(preset.settings);
 
       const delBtn = document.createElement("button");
       delBtn.textContent = "Delete";
       delBtn.style.marginLeft = "10px";
+      delBtn.className = "reset-button";
       delBtn.onclick = () => deletePreset(index);
       
       row.appendChild(nameSpan);
+      row.appendChild(loadBtn);
       row.appendChild(delBtn);
       presetListContainer.appendChild(row);
     });
