@@ -42,6 +42,7 @@ const presetNameInput = document.getElementById("newPresetName");
 const savePresetButton = document.getElementById("savePreset");
 const presetListContainer = document.getElementById("presetList");
 
+const keywordColorInput = document.getElementById("keywordColor");
 if(savePresetButton) savePresetButton.addEventListener("click", saveNewPreset);
 
 let s = {
@@ -528,6 +529,10 @@ function applyPreset(presetSettings) {
   
   if(bgColorSearch) bgColorSearch.value = s.selectedBgColor;
 
+  if (s.keywordColor) {
+    keywordColorInput.value = s.keywordColor;
+  }
+  
   // 3. Send the signal to main.js
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs[0]) {
@@ -538,3 +543,24 @@ function applyPreset(presetSettings) {
     }
   });
 }
+
+keywordColorInput.addEventListener("input", (e) => {
+  const color = e.target.value;
+
+  // 1. Update State (Crucial for Presets)
+  s.keywordColor = color; 
+
+  // 2. Save to Storage
+  chrome.storage.sync.set({ keywordColor: color });
+
+  // 3. Send message to live page
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]) {
+      // We send a specific action to update just the color
+      chrome.tabs.sendMessage(tabs[0].id, { 
+        action: "updateKeywordColor", 
+        color: color 
+      });
+    }
+  });
+});

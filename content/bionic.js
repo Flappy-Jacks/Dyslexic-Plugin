@@ -179,19 +179,23 @@ export async function highlightKeywordsBionically(keywords, focusLength = 2) {
     console.log(`✨ Bionic Reading applied to ${highlightedCount} keyword instances!`);
 }
 
-export async function colorizeKeywords(keywords, focusLength = 2) {
+export async function colorizeKeywords(keywords, focusLength = 2, color = "#C70000") {
   if (!keywords || keywords.length === 0) {
     console.warn("⚠️ No keywords provided for bionic highlighting.");
     return;
   }
 
   // Don't re-import, these are already in this module
+  const existingStyle = document.getElementById("colorize-style");
+  if (existingStyle) existingStyle.remove();
+  
   injectCSS(false, false); // Use current dark mode settings
   const styleElement = document.createElement('style');
+  styleElement.id = "colorize-style";
   styleElement.textContent = `
     .colorize-keyword {
       font-weight: bold;
-      color: #C70000 !important; /* bright red */
+      color: ${color} !important;
     }
   `;
   document.head.appendChild(styleElement);

@@ -13,6 +13,7 @@ let settings = {
   selectedLetterSpacing: "",
   selectedBgColor: "",
   selectedLineSpacing: "",
+  keywordColor: "#C70000",  
 };
 
 // Loads user saved settings
@@ -85,11 +86,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           const importantWords = await extractImportantWords(pageText, 2000);
           console.log("🏷️ Important words:", importantWords);
 
+          // Save keywords to global settings so we can re-colorize later if color changes
+          settings.keywords = importantWords;
+
           // Import the bionic highlighting function
           const { colorizeKeywords } = await import("./bionic.js");
           
           // Apply bionic reading to the extracted keywords
-          await colorizeKeywords(importantWords, settings.focusLength);
+          await colorizeKeywords(importantWords, settings.focusLength, settings.keywordColor);
 
           sendResponse({ ok: true, words: importantWords });
         } catch (err) {
@@ -189,6 +193,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       deactivateColorizeKeywords();
       removeCustomStyles();
       break;
+    
+    case "updateKeywordColor":
+      settings.keywordColor = request.color;
+
+      // We assume you store your current keywords in 'settings.keywords' 
+      // or somewhere global in main.js
+      if (settings.keywords && settings.keywords.length > 0) {
+        colorizeKeywords(settings.keywords, settings.focusLength, settings.keywordColor);
+      }
+      break;
 
     case "applyAllSettings":
       const newS = request.settings;
@@ -210,8 +224,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         deactivateBionicReading();
       }
       sendResponse({ ok: true });
-      break;
       
+      if (newS.keywords) {
+        colorizeKeywords(newS.keywords, newS.focusLength, newS.keywordColor);
+      }
+      break;
+
     default:
       console.warn("Unknown action:", request.action);
       break;
