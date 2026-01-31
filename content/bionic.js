@@ -228,3 +228,16 @@ export function deactivateColorizeKeywords() {
         span.outerHTML = span.textContent;
     });
 }
+
+// NEW: A lightweight function to update color instantly
+export function setKeywordStyle(color) {
+  const styleElement = document.getElementById("colorize-style");
+  if (styleElement) {
+    styleElement.textContent = `
+      .colorize-keyword {
+        font-weight: bold;
+        color: ${color} !important;
+      }
+    `;
+  }
+}

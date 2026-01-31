@@ -181,3 +181,10 @@ h1 {
   border: 1px solid #ccc;
   justify-content: space-between;
 }
+
+.bionic-reading-col {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: space-between;
+}

@@ -7,26 +7,39 @@
   <body>
     <h1>Dyslexic Friendly Extension</h1>
 
-    <div class="test-container">
+    
+    <div class="presets-reset">
+      <div class="tab-header">
+          <p>Text Enhancements</p>
+      </div>
       <!-- <div>
       <label for="test-button">Test NLP</label>
       <button id="test-button">run test</button>
       </div> -->
-
-      <div>
-      <label for="apply-bionic-reading">Apply Bionic Reading</label>
-      <button id="apply-bionic-reading">Apply</button>
+      
+      <div class="presets-container">
+        
+        <label for="apply-bionic-reading">Bionic Reading</label>
+        <div class="bionic-reading-col">
+          <button id="apply-bionic-reading" class="preset-button">Apply Bionic Reading</button>
+          <button id="btnRemoveBionic" class="preset-button">Remove Bionic Reading</button>
+        </div>
       </div>
 
-      <div>
-      <label for="colorize-keywords">Colorize Keywords</label>
-      <button id="colorize-keywords">Colorize Keywords</button>
+      <div class="presets-container">
+        <label for="colorize-keywords">Colorize Keywords</label>
+        <div class="bionic-reading-col">
+          <button id="colorize-keywords" class="preset-button">Colorize Keywords</button>
+          <button id="btnRemoveColorizeKeywords" class="preset-button">Remove Keywords</button>
+        </div>
+        <div class="control-group">
+          <label for="keywordColor">Keyword Color:</label>
+          <input type="color" id="keywordColor" value="#C70000">
+        </div>
       </div>
+      
 
-      <div class="control-group">
-        <label for="keywordColor">Keyword Color:</label>
-        <input type="color" id="keywordColor" value="#C70000">
-      </div>
+      
     </div>
 
 

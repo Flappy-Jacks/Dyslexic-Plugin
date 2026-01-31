@@ -1,5 +1,5 @@
 import { applyCompact, applyOpen, applyRelaxed, changeBgColor, changeFontColor, changeFont, changeFontSize, changeLetterSpacing, changeLineSpacing, changeWordSpacing, removeCustomStyles } from "./font";
-import { activateBionicReading, deactivateBionicReading, updateBionicReading, getTextNodes, deactivateColorizeKeywords } from "./bionic";
+import { activateBionicReading, deactivateBionicReading, updateBionicReading, getTextNodes, deactivateColorizeKeywords, colorizeKeywords, setKeywordStyle } from "./bionic";
 
 let settings = {
   isEnabled: false,
@@ -76,23 +76,50 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       })();
       return true;
 
-      case "colorizeKeywords":
+      // case "colorizeKeywords":
+      // (async () => {
+      //   try {
+      //     console.log("📄 Extracting text from webpage...");
+      //     const pageText = document.body.innerText;
+
+      //     const { extractImportantWords } = await import("./nlp-tfidf.js");
+      //     const importantWords = await extractImportantWords(pageText, 2000);
+      //     console.log("🏷️ Important words:", importantWords);
+
+      //     // Save keywords to global settings so we can re-colorize later if color changes
+      //     settings.keywords = importantWords;
+
+      //     // Import the bionic highlighting function
+      //     const { colorizeKeywords } = await import("./bionic.js");
+          
+      //     // Apply bionic reading to the extracted keywords
+      //     await colorizeKeywords(importantWords, settings.focusLength, settings.keywordColor);
+
+      //     sendResponse({ ok: true, words: importantWords });
+      //   } catch (err) {
+      //     console.error("❌ NLP error:", err);
+      //     sendResponse({ ok: false, error: err.message });
+      //   }
+      // })();
+      // return true;
+    case "colorizeKeywords":
       (async () => {
         try {
           console.log("📄 Extracting text from webpage...");
           const pageText = document.body.innerText;
 
-          const { extractImportantWords } = await import("./nlp-tfidf.js");
-          const importantWords = await extractImportantWords(pageText, 2000);
-          console.log("🏷️ Important words:", importantWords);
+          // 1. Import the new Optimized extractor
+          const { extractOptimizedKeywords } = await import("./nlp-optimized.js");
+          
+          // 2. Call it (No need to pass a number, the function calculates it)
+          const importantWords = await extractOptimizedKeywords(pageText); 
+          
+          // 3. Save to settings
+          settings.keywords = importantWords; 
 
-          // Save keywords to global settings so we can re-colorize later if color changes
-          settings.keywords = importantWords;
-
-          // Import the bionic highlighting function
           const { colorizeKeywords } = await import("./bionic.js");
           
-          // Apply bionic reading to the extracted keywords
+          // 4. Colorize
           await colorizeKeywords(importantWords, settings.focusLength, settings.keywordColor);
 
           sendResponse({ ok: true, words: importantWords });
@@ -102,7 +129,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
       })();
       return true;
-
+      
     case "applyRelaxed":
         applyRelaxed(settings);
       break;
@@ -199,9 +226,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
       // We assume you store your current keywords in 'settings.keywords' 
       // or somewhere global in main.js
-      if (settings.keywords && settings.keywords.length > 0) {
-        colorizeKeywords(settings.keywords, settings.focusLength, settings.keywordColor);
-      }
+      // if (settings.keywords && settings.keywords.length > 0) {
+      //   colorizeKeywords(settings.keywords, settings.focusLength, settings.keywordColor);
+      // }
+
+      setKeywordStyle(settings.keywordColor);
       break;
 
     case "applyAllSettings":
@@ -228,6 +257,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (newS.keywords) {
         colorizeKeywords(newS.keywords, newS.focusLength, newS.keywordColor);
       }
+      break;
+
+    case "removeKeywords":
+        deactivateColorizeKeywords(); // This is imported from ./bionic.js
+        settings.keywords = [];       // Clear stored keywords
+        sendResponse({ ok: true });
       break;
 
     default:

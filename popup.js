@@ -45,6 +45,9 @@ const presetListContainer = document.getElementById("presetList");
 const keywordColorInput = document.getElementById("keywordColor");
 if(savePresetButton) savePresetButton.addEventListener("click", saveNewPreset);
 
+const btnRemoveBionic = document.getElementById("btnRemoveBionic");
+const btnRemoveColorizeKeywords = document.getElementById("btnRemoveColorizeKeywords");
+
 let s = {
   isEnabled: false,
   focusLength: 2,
@@ -384,6 +387,7 @@ resetSettings.addEventListener("click", () => {
     selectedLetterSpacing: "",
     selectedBgColor: "",
     selectedLineSpacing: "",
+    keywordColor: "#C70000",
     // Note: We intentionally DO NOT include 'userPresets' here so it stays untouched
   };
 
@@ -532,7 +536,7 @@ function applyPreset(presetSettings) {
   if (s.keywordColor) {
     keywordColorInput.value = s.keywordColor;
   }
-  
+
   // 3. Send the signal to main.js
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs[0]) {
@@ -564,3 +568,36 @@ keywordColorInput.addEventListener("input", (e) => {
     }
   });
 });
+
+
+if (btnRemoveBionic) {
+  btnRemoveBionic.addEventListener("click", () => {
+    
+    // A. Visually turn off the toggle switch
+    const toggle = document.getElementById("toggleSwitch");
+    if (toggle) toggle.checked = false;
+
+    // B. Save the "Disabled" state to Chrome storage
+    chrome.storage.sync.set({ isEnabled: false });
+
+    // C. Send the command to the active tab
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "deactivateBionicReading" });
+      }
+    });
+  });
+}
+
+if (btnRemoveColorizeKeywords) {
+  btnRemoveColorizeKeywords.addEventListener("click", () => {
+    const toggle = document.getElementById("toggleSwitch");
+    if (toggle) toggle.checked = false;
+    chrome.storage.sync.set({ isEnabled: false });
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      
+      chrome.tabs.sendMessage(tabs[0].id, { action: "removeKeywords" });
+    });
+});
+}
