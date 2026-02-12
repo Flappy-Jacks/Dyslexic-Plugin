@@ -51,15 +51,17 @@ export function changeFontColor(fontColor) {
 
 export function changeFontSize(fontSize) {
     const existing = document.getElementById("newFontSize");
-    if (existing) { existing.remove(); }
+    if (existing) existing.remove();
     if (fontSize === "0") return;
+
     const style = document.createElement("style");
     style.id = "newFontSize";
     style.textContent = `
-        body, body * {
-        font-size: ${fontSize}px !important;
+        html {
+            font-size: ${fontSize}px !important;
         }
     `;
+
     document.head.appendChild(style);
 }
 
@@ -93,15 +95,23 @@ export function changeLetterSpacing(spacingSize, unit = "em") {
 
 export function changeLineSpacing(spacingSize, unit = "em") {
     const existing = document.getElementById("newLineSpacing");
-    if (existing) { existing.remove(); }
+    if (existing) existing.remove();
     if (spacingSize === "0") return;
+
     const style = document.createElement("style");
     style.id = "newLineSpacing";
     style.textContent = `
-        body, body * {
-        line-height: ${spacingSize}${unit} !important;
+        p,
+        li,
+        blockquote,
+        article,
+        section,
+        main,
+        div:not(:has(input, textarea, button, select)) {
+            line-height: ${spacingSize}${unit} !important;
         }
     `;
+
     document.head.appendChild(style);
 }
 

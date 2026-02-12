@@ -10,7 +10,7 @@ const fontSearch = document.getElementById("chooseFont");
 const fontChoices = document.getElementById("fontChoices");
 const fonts = [
   "Default", "Arial", "Verdana", "Helvetica", "Times New Roman", "Courier New",
-  "Georgia", "Palatino", "Garamond", "Bookman", "Comic Sans MS",
+  "Georgia", "Palatino", "Poppins", "Garamond", "Bookman", "Comic Sans MS",
   "Trebuchet MS", "Arial Black", "Impact", "Lucida Console", "Tahoma"
 ];
 const fontColorSearch = document.getElementById("chooseFontColor");
