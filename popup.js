@@ -13,9 +13,9 @@ const fonts = [
   "Georgia", "Palatino", "Poppins", "Garamond", "Bookman", "Comic Sans MS",
   "Trebuchet MS", "Arial Black", "Impact", "Lucida Console", "Tahoma"
 ];
-const fontColorSearch = document.getElementById("chooseFontColor");
-const fontColorChoices = document.getElementById("fontColorChoices");
-const fontColors = [ "Default", "Blue", "Green", "Red"];
+// const fontColorSearch = document.getElementById("chooseFontColor");
+// const fontColorChoices = document.getElementById("fontColorChoices");
+// const fontColors = [ "Default", "Blue", "Green", "Red"];
 const fontSizeSearch = document.getElementById("chooseFontSize");
 const fontSizeSlider = document.getElementById("slideFontSize");
 const wordSpacingSearch = document.getElementById("chooseWordSpacing");
@@ -48,6 +48,9 @@ if(savePresetButton) savePresetButton.addEventListener("click", saveNewPreset);
 const btnRemoveBionic = document.getElementById("btnRemoveBionic");
 const btnRemoveColorizeKeywords = document.getElementById("btnRemoveColorizeKeywords");
 
+const fontColorInput = document.getElementById("chooseFontColor");
+const resetFontColorBtn = document.getElementById("resetFontColor");
+
 let s = {
   isEnabled: false,
   focusLength: 2,
@@ -71,8 +74,10 @@ chrome.storage.sync.get(Object.keys(s), (saved) => {
   darkModeToggle.checked = s.isDarkMode;
   darkModeToggle2.checked = s.isDarkMode2;
   fontSearch.value = s.selectedFont
-  fontColorSearch.value = s.selectedFontColor;
-  fontSizeSearch.value = s.selectedFontSize;
+  // fontColorSearch.value = s.selectedFontColor;
+  fontColorInput.value = (s.selectedFontColor === "Default" || !s.selectedFontColor) 
+  ? "#000000" 
+  : s.selectedFontColor;  fontSizeSearch.value = s.selectedFontSize;
   fontSizeSlider.value = s.selectedFontSize;
   wordSpacingSearch.value = s.selectedWordSpacing;
   letterSpacingSearch.value = s.selectedLetterSpacing;
@@ -264,24 +269,70 @@ function populateFontColorDropdown(filter = "") {
   });
 }
 
-function selectFontColor(fontColor) {
-  fontColorSearch.value = fontColor;
+// function selectFontColor(fontColor) {
+//   fontColorSearch.value = fontColor;
 
-  s.selectedFontColor = fontColor; // <--- ADD THIS
+//   s.selectedFontColor = fontColor; // <--- ADD THIS
 
-  fontColorChoices.innerHTML = "";
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, {
-      action: "changeFontColor",
-      color: fontColor
+//   fontColorChoices.innerHTML = "";
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     chrome.tabs.sendMessage(tabs[0].id, {
+//       action: "changeFontColor",
+//       color: fontColor
+//     });
+//   });
+//   chrome.storage.sync.set({ selectedFontColor: fontColor });
+// }
+
+// fontColorSearch.addEventListener("input", () => { populateFontColorDropdown(fontColorSearch.value); });
+// fontColorSearch.addEventListener("focus", () => { populateFontColorDropdown(fontColorSearch.value); });
+// fontColorSearch.addEventListener("blur", () => { setTimeout(() => fontColorChoices.innerHTML = "", 200); });
+
+// --- Font Color Picker Logic ---
+
+// --- Font Color Picker Logic ---
+
+// 1. Listen for real-time color changes
+if (fontColorInput) {
+  fontColorInput.addEventListener("input", (e) => {
+    const color = e.target.value;
+    
+    // Update local state so it saves correctly
+    s.selectedFontColor = color;
+    chrome.storage.sync.set({ selectedFontColor: color });
+    
+    // Send ONLY the changeFontColor action to the active tab
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        chrome.tabs.sendMessage(tabs[0].id, { 
+          action: "changeFontColor", 
+          color: color 
+        });
+      }
     });
   });
-  chrome.storage.sync.set({ selectedFontColor: fontColor });
 }
 
-fontColorSearch.addEventListener("input", () => { populateFontColorDropdown(fontColorSearch.value); });
-fontColorSearch.addEventListener("focus", () => { populateFontColorDropdown(fontColorSearch.value); });
-fontColorSearch.addEventListener("blur", () => { setTimeout(() => fontColorChoices.innerHTML = "", 200); });
+// 2. Listen for Reset Button
+if (resetFontColorBtn) {
+  resetFontColorBtn.addEventListener("click", () => {
+    s.selectedFontColor = "Default"; 
+    chrome.storage.sync.set({ selectedFontColor: "Default" });
+    
+    // Visually reset the picker to black
+    if (fontColorInput) fontColorInput.value = "#000000";
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        // Use the specific action here too for consistency
+        chrome.tabs.sendMessage(tabs[0].id, { 
+          action: "changeFontColor", 
+          color: "Default" 
+        });
+      }
+    });
+  });
+}
 
 function populateFontDropdown(filter = "") {
   fontChoices.innerHTML = "";
@@ -517,7 +568,12 @@ function applyPreset(presetSettings) {
   if(darkModeToggle2) darkModeToggle2.checked = s.isDarkMode2;
   
   if(fontSearch) fontSearch.value = s.selectedFont;
-  if(fontColorSearch) fontColorSearch.value = s.selectedFontColor;
+  if (s.selectedFontColor && s.selectedFontColor !== "Default") {
+    if (fontColorInput) fontColorInput.value = s.selectedFontColor;
+    } else {
+      // If preset uses default color, reset picker visual
+      if (fontColorInput) fontColorInput.value = "#000000"; 
+  }
   
   if(fontSizeSearch) fontSizeSearch.value = s.selectedFontSize;
   if(fontSizeSlider) fontSizeSlider.value = s.selectedFontSize;

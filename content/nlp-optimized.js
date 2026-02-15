@@ -1,8 +1,8 @@
 import { pipeline } from '@xenova/transformers';
 
 // --- CONFIGURATION ---
-const TIMEOUT_MS = 10000; // 3 seconds max
-const DESIRED_COVERAGE = 0.025; // 2.5% of words
+const TIMEOUT_MS = 10000; // 10 seconds max
+const DESIRED_COVERAGE = 0.10; // 2.5% of words
 
 let extractorPipeline = null;
 
@@ -18,24 +18,52 @@ function getIdealKeywordCount(wordCount) {
 }
 
 // 2. Fast TF-IDF Filter
+// nlp-optimized.js
+
+// ... (Your imports and BLOCK_LIST stay the same) ...
+
+// 2. Fast TF-IDF Filter (Enhanced for Proper Nouns)
 function quickTfidfCandidates(text) {
-  // Simple tokenizer: lowercase and find words with 3+ letters
-  const words = text.toLowerCase().match(/\b[a-z]{3,}\b/g) || [];
-  const freq = {};
+  // A. Split text into words, preserving case
+  // Matches words with 3+ letters
+  const rawWords = text.match(/\b[A-Za-z]{3,}\b/g) || [];
   
-  words.forEach(w => {
-    // Ensure we don't use 's' or any confusing variable name
-    if(!BLOCK_LIST.has(w)) {
-      freq[w] = (freq[w] || 0) + 1;
+  const freq = {};
+  const caseMap = {}; // Keeps track of the "best" casing (e.g., prefers "Apple" over "apple")
+
+  rawWords.forEach((w, index) => {
+    const lower = w.toLowerCase();
+    
+    // Skip stop words
+    if (BLOCK_LIST.has(lower)) return;
+
+    // B. Detect Proper Nouns
+    // Logic: If it starts with Capital, AND previous word didn't end with a dot (start of sentence check)
+    // (This is a simplified check, but fast enough for this use case)
+    const isCapitalized = /^[A-Z]/.test(w);
+    
+    // Calculate Score: Base 1, Boost to 2 if it looks like a Proper Noun
+    let score = isCapitalized ? 2 : 1;
+
+    // Accumulate Score
+    freq[lower] = (freq[lower] || 0) + score;
+
+    // C. Store the "Display Version" of the word
+    // If we find a Capitalized version, remember it as the preferred display
+    if (isCapitalized || !caseMap[lower]) {
+      caseMap[lower] = w;
     }
   });
 
-  // Return top 50 most frequent words
+  // Return top 50 most frequent/important words
+  // We sort by score (freq), but return the "Nice Looking" string from caseMap
   return Object.entries(freq)
     .sort((a, b) => b[1] - a[1]) 
-    .slice(0, 50)                
-    .map(entry => entry[0]);     
+    .slice(0, 150)                
+    .map(entry => caseMap[entry[0]]); // Return "Google" instead of "google"
 }
+
+// ... (The rest of your file, extractOptimizedKeywords, stays the same) ...
 
 // 3. MAIN EXPORT
 export async function extractOptimizedKeywords(text) {

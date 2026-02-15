@@ -84,10 +84,13 @@
         <div id="fontChoices" class="dropdown-choices"></div>
       </div>
 
-      <div class="dropdwon-container">
+      <div class="control-group">
         <label for="chooseFontColor">Font Color</label>
-        <input type="text" placeholder="Search.." id="chooseFontColor" class="text-input">
-        <div id="fontColorChoices" class="dropdown-choices"></div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <input type="color" id="chooseFontColor" value="#000000" style="cursor: pointer; height: 40px; width: 60px;">
+          
+          <button id="resetFontColor" style="font-size: 12px; padding: 5px 10px;">Reset to Default</button>
+        </div>
       </div>
       
       <div class="dropdwon-container">

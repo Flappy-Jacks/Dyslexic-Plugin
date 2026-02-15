@@ -48,24 +48,50 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //   })();
     //   return true;
     
-    case "applyBionicReading":
+    // case "applyBionicReading":
+    //   (async () => {
+    //     try {
+    //       console.log("📄 Extracting text from webpage...");
+    //       const pageText = document.body.innerText;
+
+    //       const { extractImportantWords } = await import("./nlp-tfidf.js");
+    //       const importantWords = await extractImportantWords(pageText, 2000);
+    //       console.log("🏷️ Important words:", importantWords);
+
+    //       // const { extractImportantWordsHybrid } = await import("./nlp-hybrid.js");
+    //       // const importantWords = await extractImportantWordsHybrid(pageText, 20);
+    //       // console.log("🏷️ Important words:", importantWords);
+
+    //       // Import the bionic highlighting function
+    //       const { highlightKeywordsBionically } = await import("./bionic.js");
+          
+    //       // Apply bionic reading to the extracted keywords
+    //       await highlightKeywordsBionically(importantWords, settings.focusLength);
+
+    //       sendResponse({ ok: true, words: importantWords });
+    //     } catch (err) {
+    //       console.error("❌ NLP error:", err);
+    //       sendResponse({ ok: false, error: err.message });
+    //     }
+    //   })();
+    //   return true;
+case "applyBionicReading":
       (async () => {
         try {
           console.log("📄 Extracting text from webpage...");
           const pageText = document.body.innerText;
 
-          const { extractImportantWords } = await import("./nlp-tfidf.js");
-          const importantWords = await extractImportantWords(pageText, 2000);
+          // 1. Change import to nlp-optimized.js
+          const { extractOptimizedKeywords } = await import("./nlp-optimized.js");
+          
+          // 2. Call the function (no need for '2000', it calculates count automatically)
+          const importantWords = await extractOptimizedKeywords(pageText);
           console.log("🏷️ Important words:", importantWords);
 
-          // const { extractImportantWordsHybrid } = await import("./nlp-hybrid.js");
-          // const importantWords = await extractImportantWordsHybrid(pageText, 20);
-          // console.log("🏷️ Important words:", importantWords);
-
-          // Import the bionic highlighting function
+          // 3. Import the bionic highlighting function
           const { highlightKeywordsBionically } = await import("./bionic.js");
           
-          // Apply bionic reading to the extracted keywords
+          // 4. Apply bionic reading to the extracted keywords
           await highlightKeywordsBionically(importantWords, settings.focusLength);
 
           sendResponse({ ok: true, words: importantWords });
@@ -75,33 +101,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
       })();
       return true;
-
-      // case "colorizeKeywords":
-      // (async () => {
-      //   try {
-      //     console.log("📄 Extracting text from webpage...");
-      //     const pageText = document.body.innerText;
-
-      //     const { extractImportantWords } = await import("./nlp-tfidf.js");
-      //     const importantWords = await extractImportantWords(pageText, 2000);
-      //     console.log("🏷️ Important words:", importantWords);
-
-      //     // Save keywords to global settings so we can re-colorize later if color changes
-      //     settings.keywords = importantWords;
-
-      //     // Import the bionic highlighting function
-      //     const { colorizeKeywords } = await import("./bionic.js");
-          
-      //     // Apply bionic reading to the extracted keywords
-      //     await colorizeKeywords(importantWords, settings.focusLength, settings.keywordColor);
-
-      //     sendResponse({ ok: true, words: importantWords });
-      //   } catch (err) {
-      //     console.error("❌ NLP error:", err);
-      //     sendResponse({ ok: false, error: err.message });
-      //   }
-      // })();
-      // return true;
+      
     case "colorizeKeywords":
       (async () => {
         try {
@@ -233,18 +233,49 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       setKeywordStyle(settings.keywordColor);
       break;
 
+    // case "applyAllSettings":
+    //   const newS = request.settings;
+    //   Object.assign(settings, newS);
+
+    //   // Apply all visual styles immediately using the imported functions
+    //   if (newS.selectedFont) changeFont(newS.selectedFont);
+    //   if (newS.selectedFontColor) changeFontColor(newS.selectedFontColor);
+    //   if (newS.selectedFontSize) changeFontSize(newS.selectedFontSize);
+    //   if (newS.selectedWordSpacing) changeWordSpacing(newS.selectedWordSpacing);
+    //   if (newS.selectedLetterSpacing) changeLetterSpacing(newS.selectedLetterSpacing);
+    //   if (newS.selectedBgColor) changeBgColor(newS.selectedBgColor);
+    //   if (newS.selectedLineSpacing) changeLineSpacing(newS.selectedLineSpacing);
+
+    //   // Handle Bionic toggle
+    //   if (newS.isEnabled) {
+    //     activateBionicReading(newS.isDarkMode, newS.isDarkMode2, newS.focusLength);
+    //   } else {
+    //     deactivateBionicReading();
+    //   }
+    //   sendResponse({ ok: true });
+      
+    //   if (newS.keywords) {
+    //     colorizeKeywords(newS.keywords, newS.focusLength, newS.keywordColor);
+    //   }
+    //   break;
+
     case "applyAllSettings":
       const newS = request.settings;
       Object.assign(settings, newS);
 
-      // Apply all visual styles immediately using the imported functions
-      if (newS.selectedFont) changeFont(newS.selectedFont);
-      if (newS.selectedFontColor) changeFontColor(newS.selectedFontColor);
-      if (newS.selectedFontSize) changeFontSize(newS.selectedFontSize);
-      if (newS.selectedWordSpacing) changeWordSpacing(newS.selectedWordSpacing);
-      if (newS.selectedLetterSpacing) changeLetterSpacing(newS.selectedLetterSpacing);
-      if (newS.selectedBgColor) changeBgColor(newS.selectedBgColor);
-      if (newS.selectedLineSpacing) changeLineSpacing(newS.selectedLineSpacing);
+      // Apply styles immediately. 
+      // We use (val || "Default") so that if a setting is empty/missing, 
+      // it resets to Default instead of doing nothing.
+
+      changeFont(newS.selectedFont || "Default");
+      changeFontColor(newS.selectedFontColor || "Default");
+      changeFontSize(newS.selectedFontSize || "0"); // 0 tells it to remove the style
+      
+      // For spacing, we check if it's defined, otherwise default to "0" or appropriate default
+      changeWordSpacing(newS.selectedWordSpacing || "0");
+      changeLetterSpacing(newS.selectedLetterSpacing || "0");
+      changeBgColor(newS.selectedBgColor || "Default");
+      changeLineSpacing(newS.selectedLineSpacing || "0");
 
       // Handle Bionic toggle
       if (newS.isEnabled) {
@@ -252,10 +283,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       } else {
         deactivateBionicReading();
       }
+      
       sendResponse({ ok: true });
       
+      // Handle Keywords
       if (newS.keywords) {
         colorizeKeywords(newS.keywords, newS.focusLength, newS.keywordColor);
+      } else {
+        // Optional: If preset has no keywords, you might want to clear them?
+        // deactivateColorizeKeywords(); 
       }
       break;
 
