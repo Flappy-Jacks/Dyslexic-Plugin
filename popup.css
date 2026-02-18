@@ -82,7 +82,7 @@ h1 {
   border-radius: 5px;
 }
 
-.dropdwon-container {
+.dropdown-container {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -187,4 +187,53 @@ h1 {
   flex-direction: column;
   gap: 15px;
   justify-content: space-between;
+}
+
+@media(prefers-color-scheme: dark) {
+  body {
+    background-color: #202124 !important;
+    color: #e8eaed !important;
+  }
+
+  h1, h2, h3, p, label {
+    color: #e8eaed !important;
+  }
+
+  input[type="text"], input[type="number"],
+    select,
+    textarea {
+      background-color: #3c4043 !important;
+      color: #ffffff  !important;
+      border: 1px solid #5f6368 !important;
+  }
+
+  button {
+    background-color: #5f6368 !important; /* Light Blue for contrast */
+    color: #e8eaed !important;            /* Dark text on button */
+    border: none !important;  
+  }
+
+  button:hover {
+    background-color: #aecbfa !important;
+  }
+  
+  .presets-container, .container, .dropdown-container {
+    background-color: #292a2d !important;
+    border: 1px solid #3c4043 !important;
+  }
+
+  .text-input {
+    background-color: #3c4043 !important;
+    color: white !important;
+    border-color: #5f6368 !important;
+  }
+  
+  input[type=range] {
+    background-color: #5f6368 !important;
+  }
+
+  .tab-header {
+    background-color: #292a2d !important;
+    border: 1px solid #3c4043 !important;
+  }
 }

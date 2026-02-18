@@ -2,7 +2,7 @@ import { pipeline } from '@xenova/transformers';
 
 // --- CONFIGURATION ---
 const TIMEOUT_MS = 10000; // 10 seconds max
-const DESIRED_COVERAGE = 0.10; // 2.5% of words
+const DESIRED_COVERAGE = 0.15; // 2.5% of words
 
 let extractorPipeline = null;
 
@@ -14,7 +14,7 @@ const BLOCK_LIST = new Set([
 // 1. Calculate how many words to highlight
 function getIdealKeywordCount(wordCount) {
   let ideal = Math.floor(wordCount * DESIRED_COVERAGE);
-  return Math.min(Math.max(ideal, 3), 20); // Clamp between 3 and 20
+  return Math.min(Math.max(ideal, 3), 100); // Clamp between 3 and 20
 }
 
 // 2. Fast TF-IDF Filter
@@ -55,11 +55,11 @@ function quickTfidfCandidates(text) {
     }
   });
 
-  // Return top 50 most frequent/important words
+  // Return top 200 most frequent/important words
   // We sort by score (freq), but return the "Nice Looking" string from caseMap
   return Object.entries(freq)
     .sort((a, b) => b[1] - a[1]) 
-    .slice(0, 150)                
+    .slice(0, 200)                  
     .map(entry => caseMap[entry[0]]); // Return "Google" instead of "google"
 }
 
