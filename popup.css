@@ -217,7 +217,7 @@ h1 {
     background-color: #aecbfa !important;
   }
   
-  .presets-container, .container, .dropdown-container {
+  .presets-container, .container, .dropdown-container, .dropdown-choices, .presets-reset, .save-presets, .tab, .tab-content {
     background-color: #292a2d !important;
     border: 1px solid #3c4043 !important;
   }
