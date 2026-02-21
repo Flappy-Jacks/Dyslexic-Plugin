@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Bionic Reading Extension",
+  "name": "Better Browsing: A Dyslexia-Friendly Chrome Extension",
   "version": "3.0",
-  "description": "Enhance your reading experience with Bionic Reading, now with Dark Mode",
+  "description": "Take charge of your own reading experience.",
   "icons": {
     "48": "icon.png"
   },
