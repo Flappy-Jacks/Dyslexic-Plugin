@@ -21,37 +21,62 @@ export function updateBionicReading(isDarkMode, isDarkMode2, focusLength) {
     activateBionicReading(isDarkMode, isDarkMode2, focusLength);
 }
 
+// export function applyBionicReading(textNode, focusLength) {
+//     const text = textNode.nodeValue;
+//     const words = text.split(/(\s+)/); // split with white space as the delimiter. Keep the delimiter
+
+//     // for each word do the following
+//     const bionicWords = words.map((word) => {
+//         if (/^\s+$/.test(word)) { return word; } // if the current "word" is just the delimiter or whitespace, keep it as is
+//         else {
+//             let bionicWord = "";
+//             const characters = word.split(''); // split actual words into an array of characters
+
+//             // for each character, check how far into the word we are and apply bionic CSS based on index
+//             characters.forEach((char, index) => {
+//                 // current letter is cleanly before focuslength
+//                 if (index === 0 || (index < focusLength && word.length > focusLength)) {
+//                     bionicWord += `<span class="bionic-primary">${char}</span>`;
+                
+//                 // current letter is within the focuslengh or transition letters TODO: remove this?
+//                 //} else if (index === Math.floor(word.length / 2)) {
+//                 //    bionicWord += `<span class="bionic-secondary">${char}</span>`;
+
+//                 // current letter is after focuslength. keep as is
+//                 } else {
+//                     bionicWord += char;
+//                 }
+//             });
+//         return bionicWord;
+//         }
+//     });
+
+//     return bionicWords.join('');
+// }
+
 export function applyBionicReading(textNode, focusLength) {
     const text = textNode.nodeValue;
     const words = text.split(/(\s+)/); // split with white space as the delimiter. Keep the delimiter
 
     // for each word do the following
     const bionicWords = words.map((word) => {
-        if (/^\s+$/.test(word)) { return word; } // if the current "word" is just the delimiter or whitespace, keep it as is
-        else {
-            let bionicWord = "";
-            const characters = word.split(''); // split actual words into an array of characters
-
-            // for each character, check how far into the word we are and apply bionic CSS based on index
-            characters.forEach((char, index) => {
-                // current letter is cleanly before focuslength
-                if (index === 0 || (index < focusLength && word.length > focusLength)) {
-                    bionicWord += `<span class="bionic-primary">${char}</span>`;
-                
-                // current letter is within the focuslengh or transition letters TODO: remove this?
-                //} else if (index === Math.floor(word.length / 2)) {
-                //    bionicWord += `<span class="bionic-secondary">${char}</span>`;
-
-                // current letter is after focuslength. keep as is
-                } else {
-                    bionicWord += char;
-                }
-            });
-        return bionicWord;
+        // if the current "word" is just the delimiter or whitespace, keep it as is
+        if (/^\s+$/.test(word)) { 
+            return word; 
+        } else {
+            // Calculate half the word length, rounding up
+            const splitIndex = Math.ceil(word.length / 2);
+            
+            // Split the word into the bolded first half and normal second half
+            const boldPart = word.substring(0, splitIndex);
+            const normalPart = word.substring(splitIndex);
+            
+            // Wrap them in your bionic spans
+            return `<span class="bionic-primary">${boldPart}</span>${normalPart}`;
         }
     });
 
-    return bionicWords.join('');
+    return bionicWords.join("");
 }
 
 export function getTextNodes(element) {
