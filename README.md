@@ -12,12 +12,23 @@ Enhance your reading experience with Bionic Reading. This Chrome extension appli
 
 Because this extension uses Svelte and Vite, it requires a build step. You cannot load the raw source code directly into Chrome.
 
-### 1. Build the Extension
-1. Clone this repository to your local machine.
+Because this extension uses Svelte and Vite, it requires a build step. You cannot load the raw source code directly into Chrome.
+
+### Prerequisites
+Before you begin, ensure you have **Node.js** and **npm** (Node Package Manager) installed on your system. 
+* Download and install them from the official website: [https://nodejs.org/](https://nodejs.org/) (The LTS version is recommended).
+* You can verify your installation by opening your terminal and running `node -v` and `npm -v`.
+
+### 1. Clone and Build the Extension
+1. Clone this repository to your local machine:
+```bash
+    git clone [https://github.com/yourusername/better-browsing.git](https://github.com/yourusername/better-browsing.git)
+```
 2. Open your terminal and navigate to the project folder.
 3. Install the dependencies:
-   ```bash
+```bash
    npm install
+```
 4. Build the extension
    npx vite build
 
@@ -26,14 +37,11 @@ Because this extension uses Svelte and Vite, it requires a build step. You canno
 - Open Google Chrome and navigate to chrome://extensions/.
 - Toggle the Developer mode switch in the top-right corner to ON.
 - Click the Load unpacked button in the top-left corner.
-- Select the newly generated dist folder from your project directory.
+- Select the newly generated `dist` folder from your project directory.
 - The Bionic Reading extension is now installed and ready to use.
 
 ## Step 3. Usage
-- Click on the extension icon in the Chrome toolbar to open the popup.
-- Toggle the "Activate Bionic Reading" switch to enable or disable the Bionic Reading effect on the current web page.
-- Adjust the "Focus Length" slider to change the length of bolding in the text.
-
-## Support and Contribution
-
-If you encounter any issues or would like to suggest improvements, please [open an issue](https://github.com/edwardsaunders7/BionicReaderChromeExtension/issues) on GitHub. Contributions are welcome, and you can submit a pull request with your changes.
+- Navigate to any standard public webpage (e.g., Wikipedia, Medium, a news site).
+- Click the puzzle-piece icon in your Chrome toolbar and pin Better Browsing.
+- Click the extension icon to open the popup and start tweaking the sliders!
+- (Note: Extensions cannot run on restricted internal Chrome pages like the New Tab page or the Chrome Web Store).
