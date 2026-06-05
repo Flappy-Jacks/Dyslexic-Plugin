@@ -19,14 +19,14 @@ let settings = {
 // Loads user saved settings
 chrome.storage.sync.get(Object.keys(settings), (saved) => {
     Object.assign(settings, saved);
-    if (settings.isEnabled) { activateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength); }
-    if (settings.selectedFont) { changeFont(settings.selectedFont); }
+    if (settings.isEnabled) { activateBionicReading(settings.keywords, settings.isDarkMode, settings.isDarkMode2); }    if (settings.selectedFont) { changeFont(settings.selectedFont); }
     if (settings.selectedFontColor) { changeFontColor(settings.selectedFontColor); }
     if (settings.selectedFontSize) { changeFontSize(settings.selectedFontSize); }
     if (settings.selectedWordSpacing) { changeWordSpacing(settings.selectedWordSpacing); }
     if (settings.selectedLetterSpacing) { changeLetterSpacing(settings.selectedLetterSpacing); }
     if (settings.selectedBgColor) { changeBgColor(settings.selectedBgColor); }
     if (settings.selectedLineSpacing) { changeLineSpacing(settings.selectedLineSpacing); }
+    
   });
 
 // handle requests
@@ -76,59 +76,40 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     //   })();
     //   return true;
 case "applyBionicReading":
-      (async () => {
-        try {
-          console.log("📄 Extracting text from webpage...");
-          const pageText = document.body.innerText;
+      console.log("📄 Extracting text for Bionic...");
+      const pageTextBionic = document.body.innerText;
 
-          // 1. Change import to nlp-optimized.js
-          const { extractOptimizedKeywords } = await import("./nlp-optimized.js");
+      chrome.runtime.sendMessage({ action: "extractKeywords", text: pageTextBionic }, async (response) => {
+        if (response && response.ok) {
+          settings.keywords = response.words; 
+          const { activateBionicReading } = await import("./bionic.js");
           
-          // 2. Call the function (no need for '2000', it calculates count automatically)
-          const importantWords = await extractOptimizedKeywords(pageText);
-          console.log("🏷️ Important words:", importantWords);
-
-          // 3. Import the bionic highlighting function
-          const { highlightKeywordsBionically } = await import("./bionic.js");
-          
-          // 4. Apply bionic reading to the extracted keywords
-          await highlightKeywordsBionically(importantWords, settings.focusLength);
-
-          sendResponse({ ok: true, words: importantWords });
-        } catch (err) {
-          console.error("❌ NLP error:", err);
-          sendResponse({ ok: false, error: err.message });
+          // 🚨 FIX: Pass keywords and dark mode settings
+          activateBionicReading(response.words, settings.isDarkMode, settings.isDarkMode2);
+          sendResponse({ ok: true, words: response.words });
+        } else {
+          sendResponse({ ok: false });
         }
-      })();
+      });
       return true;
       
     case "colorizeKeywords":
-      (async () => {
-        try {
-          console.log("📄 Extracting text from webpage...");
-          const pageText = document.body.innerText;
+      console.log("📄 Extracting text from webpage...");
+      const pageTextColorize = document.body.innerText;
 
-          // 1. Import the new Optimized extractor
-          const { extractOptimizedKeywords } = await import("./nlp-optimized.js");
-          
-          // 2. Call it (No need to pass a number, the function calculates it)
-          const importantWords = await extractOptimizedKeywords(pageText); 
-          
-          // 3. Save to settings
-          settings.keywords = importantWords; 
-
+      // Send text to background.js
+      chrome.runtime.sendMessage({ action: "extractKeywords", text: pageTextColorize }, async (response) => {
+        if (response && response.ok) {
+          settings.keywords = response.words; 
           const { colorizeKeywords } = await import("./bionic.js");
-          
-          // 4. Colorize
-          await colorizeKeywords(importantWords, settings.focusLength, settings.keywordColor);
-
-          sendResponse({ ok: true, words: importantWords });
-        } catch (err) {
-          console.error("❌ NLP error:", err);
-          sendResponse({ ok: false, error: err.message });
+          await colorizeKeywords(response.words, settings.focusLength, settings.keywordColor);
+          sendResponse({ ok: true, words: response.words });
+        } else {
+          console.error("❌ NLP error from Background");
+          sendResponse({ ok: false });
         }
-      })();
-      return true;
+      });
+      return true; // Keep channel open
       
     case "applyRelaxed":
         applyRelaxed(settings);
@@ -179,12 +160,21 @@ case "applyBionicReading":
 
     case "activateBionicReading":
       settings.isEnabled = true;
-      activateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength);
+      activateBionicReading(settings.keywords, settings.isDarkMode, settings.isDarkMode2);
       break;
 
-    case "deactivateBionicReading":
-      settings.isEnabled = false;
-      deactivateBionicReading();
+    case "toggleDarkMode":
+      settings.isDarkMode = request.isDarkMode;
+      if (settings.isEnabled) {
+        activateBionicReading(settings.keywords, settings.isDarkMode, settings.isDarkMode2);
+      }
+      break;
+
+    case "toggleDarkMode2":
+      settings.isDarkMode2 = request.isDarkMode2;
+      if (settings.isEnabled) {
+        activateBionicReading(settings.keywords, settings.isDarkMode, settings.isDarkMode2);
+      }
       break;
 
     case "updateFocusLength":
@@ -192,15 +182,15 @@ case "applyBionicReading":
       if (settings.isEnabled) { updateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength) };
       break;
 
-    case "toggleDarkMode":
-      settings.isDarkMode = request.isDarkMode;
-      updateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength);
-      break;
+    // case "toggleDarkMode":
+    //   settings.isDarkMode = request.isDarkMode;
+    //   updateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength);
+    //   break;
 
-    case "toggleDarkMode2":
-      settings.isDarkMode2 = request.isDarkMode2;
-      updateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength);
-      break;
+    // case "toggleDarkMode2":
+    //   settings.isDarkMode2 = request.isDarkMode2;
+    //   updateBionicReading(settings.isDarkMode, settings.isDarkMode2, settings.focusLength);
+    //   break;
 
     case "resetSettings":
       settings = {
@@ -259,42 +249,68 @@ case "applyBionicReading":
     //   }
     //   break;
 
+    // case "applyAllSettings":
+    //   const newS = request.settings;
+    //   Object.assign(settings, newS);
+
+    //   // Apply styles immediately. 
+    //   // We use (val || "Default") so that if a setting is empty/missing, 
+    //   // it resets to Default instead of doing nothing.
+
+    //   changeFont(newS.selectedFont || "Default");
+    //   changeFontColor(newS.selectedFontColor || "Default");
+    //   changeFontSize(newS.selectedFontSize || "0"); // 0 tells it to remove the style
+      
+    //   // For spacing, we check if it's defined, otherwise default to "0" or appropriate default
+    //   changeWordSpacing(newS.selectedWordSpacing || "0");
+    //   changeLetterSpacing(newS.selectedLetterSpacing || "0");
+    //   changeBgColor(newS.selectedBgColor || "Default");
+    //   changeLineSpacing(newS.selectedLineSpacing || "0");
+
+    //   // Handle Bionic toggle
+    //   if (newS.isEnabled) {
+    //     activateBionicReading(newS.isDarkMode, newS.isDarkMode2, newS.focusLength);
+    //   } else {
+    //     deactivateBionicReading();
+    //   }
+      
+    //   sendResponse({ ok: true });
+      
+    //   // Handle Keywords
+    //   if (newS.keywords) {
+    //     colorizeKeywords(newS.keywords, newS.focusLength, newS.keywordColor);
+    //   } else {
+    //     // Optional: If preset has no keywords, you might want to clear them?
+    //     // deactivateColorizeKeywords(); 
+    //   }
+    //   break;
+
     case "applyAllSettings":
       const newS = request.settings;
       Object.assign(settings, newS);
 
-      // Apply styles immediately. 
-      // We use (val || "Default") so that if a setting is empty/missing, 
-      // it resets to Default instead of doing nothing.
-
       changeFont(newS.selectedFont || "Default");
       changeFontColor(newS.selectedFontColor || "Default");
-      changeFontSize(newS.selectedFontSize || "0"); // 0 tells it to remove the style
-      
-      // For spacing, we check if it's defined, otherwise default to "0" or appropriate default
+      changeFontSize(newS.selectedFontSize || "0"); 
       changeWordSpacing(newS.selectedWordSpacing || "0");
       changeLetterSpacing(newS.selectedLetterSpacing || "0");
       changeBgColor(newS.selectedBgColor || "Default");
       changeLineSpacing(newS.selectedLineSpacing || "0");
 
-      // Handle Bionic toggle
+      // 🚨 FIX: Pass keywords here too!
       if (newS.isEnabled) {
-        activateBionicReading(newS.isDarkMode, newS.isDarkMode2, newS.focusLength);
+        activateBionicReading(newS.keywords || settings.keywords, newS.isDarkMode, newS.isDarkMode2);
       } else {
         deactivateBionicReading();
       }
       
       sendResponse({ ok: true });
       
-      // Handle Keywords
       if (newS.keywords) {
         colorizeKeywords(newS.keywords, newS.focusLength, newS.keywordColor);
-      } else {
-        // Optional: If preset has no keywords, you might want to clear them?
-        // deactivateColorizeKeywords(); 
       }
       break;
-
+      
     case "removeKeywords":
         deactivateColorizeKeywords(); // This is imported from ./bionic.js
         settings.keywords = [];       // Clear stored keywords

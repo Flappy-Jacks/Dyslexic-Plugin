@@ -51,6 +51,8 @@ const btnRemoveColorizeKeywords = document.getElementById("btnRemoveColorizeKeyw
 const fontColorInput = document.getElementById("chooseFontColor");
 const resetFontColorBtn = document.getElementById("resetFontColor");
 
+const toggleKeywords = document.getElementById("toggleKeywords");
+
 let s = {
   isEnabled: false,
   focusLength: 2,
@@ -63,6 +65,7 @@ let s = {
   selectedLetterSpacing: "",
   selectedBgColor: "",
   selectedLineSpacing: "",
+  isKeywordsEnabled: false,
 };
 
 chrome.storage.sync.get(Object.keys(s), (saved) => {
@@ -196,17 +199,60 @@ function updateSettings() {
 //   });
 // });
 
-document.getElementById("apply-bionic-reading").addEventListener("click", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "applyBionicReading" }, () => { setTimeout(updateSettings, 150); });
-  });
-});
+// document.getElementById("apply-bionic-reading").addEventListener("click", () => {
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     chrome.tabs.sendMessage(tabs[0].id, { action: "applyBionicReading" }, () => { setTimeout(updateSettings, 150); });
+//   });
+// });
 
-document.getElementById("colorize-keywords").addEventListener("click", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, { action: "colorizeKeywords" }, () => { setTimeout(updateSettings, 150); });
+// document.getElementById("colorize-keywords").addEventListener("click", () => {
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     chrome.tabs.sendMessage(tabs[0].id, { action: "colorizeKeywords" }, () => { setTimeout(updateSettings, 150); });
+//   });
+// });
+
+const toggleKeywords = document.getElementById("toggleKeywords");
+
+// --- BIONIC READING TOGGLE ---
+if (toggleSwitch) {
+  toggleSwitch.addEventListener("change", (e) => {
+    const isEnabled = e.target.checked;
+    s.isEnabled = isEnabled;
+    chrome.storage.sync.set({ isEnabled: isEnabled });
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        if (isEnabled) {
+          chrome.tabs.sendMessage(tabs[0].id, { action: "activateBionicReading" });
+        } else {
+          chrome.tabs.sendMessage(tabs[0].id, { action: "deactivateBionicReading" });
+        }
+      }
+    });
   });
-});
+}
+
+// --- COLORIZE KEYWORDS TOGGLE ---
+if (toggleKeywords) {
+  toggleKeywords.addEventListener("change", (e) => {
+    const isKeywordsEnabled = e.target.checked;
+    s.isKeywordsEnabled = isKeywordsEnabled;
+    chrome.storage.sync.set({ isKeywordsEnabled: isKeywordsEnabled });
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        if (isKeywordsEnabled) {
+          // If turned ON, run the NLP extraction
+          chrome.tabs.sendMessage(tabs[0].id, { action: "colorizeKeywords" });
+        } else {
+          // If turned OFF, remove the colors
+          chrome.tabs.sendMessage(tabs[0].id, { action: "removeKeywords" });
+        }
+      }
+    });
+  });
+}
+
 
 openButton.addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -439,9 +485,12 @@ resetSettings.addEventListener("click", () => {
     selectedBgColor: "",
     selectedLineSpacing: "",
     keywordColor: "#C70000",
+    isKeywordsEnabled: false,
     // Note: We intentionally DO NOT include 'userPresets' here so it stays untouched
   };
 
+  if (toggleKeywords) toggleKeywords.checked = false; // Uncheck the box visually
+  
   // 2. Overwrite only these specific keys in storage
   chrome.storage.sync.set(defaultSettings, () => {
     
@@ -591,6 +640,13 @@ function applyPreset(presetSettings) {
 
   if (s.keywordColor) {
     keywordColorInput.value = s.keywordColor;
+  }
+
+  if (toggleKeywords) {
+    toggleKeywords.checked = s.isKeywordsEnabled || false;
+  }
+  if (toggleSwitch) {
+    toggleSwitch.checked = s.isEnabled || false;
   }
 
   // 3. Send the signal to main.js

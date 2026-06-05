@@ -6,7 +6,11 @@
   "icons": {
     "48": "icon.png"
   },
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["activeTab", "storage", "tabs"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
   "action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
@@ -14,8 +18,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["dist/content.bundle.js"],
-      "type": "module"
+      "js": ["content/main.js"] 
     }
   ],
   "web_accessible_resources": [

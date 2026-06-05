@@ -2,31 +2,37 @@
 
 Enhance your reading experience with Bionic Reading. This Chrome extension applies the Bionic Reading technique to the text on web pages, making it easier to read and process information.
 
-## Installation
+## Technology Stack
+* **Frontend UI:** Svelte 5 & Tailwind CSS v4 (Reactive, lightning-fast popup interface).
+* **Backend:** Vanilla JavaScript (Lightweight DOM manipulation content scripts).
+* **Machine Learning:** `@xenova/transformers` (On-device NLP for keyword extraction).
+* **Bundler:** Vite & Rolldown.
 
-Follow these steps to install the Bionic Reading extension manually:
+## Installation & Local Development
 
-### Step 1: Download the extension files
+Because this extension uses Svelte and Vite, it requires a build step. You cannot load the raw source code directly into Chrome.
 
-- Click the green "Code" button on the repository's main page, then click "Download ZIP" to download the extension files as a ZIP archive.
-- Extract the contents of the ZIP file to a folder on your computer.
+### 1. Build the Extension
+1. Clone this repository to your local machine.
+2. Open your terminal and navigate to the project folder.
+3. Install the dependencies:
+   ```bash
+   npm install
+4. Build the extension
+   npx vite build
 
 ### Step 2: Load the extension in Chrome
 
-- Open the Google Chrome browser.
-- Navigate to the Extensions page by clicking the three-dot menu in the top-right corner, selecting "More tools," and then "Extensions."
-- Enable "Developer mode" by toggling the switch in the top-right corner of the Extensions page.
-- Click the "Load unpacked" button, navigate to the folder containing the extracted extension files, and select the folder.
+- Open Google Chrome and navigate to chrome://extensions/.
+- Toggle the Developer mode switch in the top-right corner to ON.
+- Click the Load unpacked button in the top-left corner.
+- Select the newly generated dist folder from your project directory.
+- The Bionic Reading extension is now installed and ready to use.
 
-The Bionic Reading extension is now installed and ready to use.
-
-## Usage
-
-To use the Bionic Reading extension:
-
-1. Click on the extension icon in the Chrome toolbar to open the popup.
-2. Toggle the "Activate Bionic Reading" switch to enable or disable the Bionic Reading effect on the current web page.
-3. Adjust the "Focus Length" slider to change the length of bolding in the text.
+## Step 3. Usage
+- Click on the extension icon in the Chrome toolbar to open the popup.
+- Toggle the "Activate Bionic Reading" switch to enable or disable the Bionic Reading effect on the current web page.
+- Adjust the "Focus Length" slider to change the length of bolding in the text.
 
 ## Support and Contribution
 
