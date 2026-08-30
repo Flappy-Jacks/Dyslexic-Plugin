@@ -5,4 +5,4 @@ Enhance your reading experience with Better Browsing. This Chrome extension allo
 ## Technology Stack
 * **Frontend UI:** Svelte 5 & Tailwind CSS v4 (Reactive, lightning-fast popup interface).
 * **Backend:** Vanilla JavaScript (Lightweight DOM manipulation content scripts).
-* **Machine Learning:** .
+* **Keyword Selection:** Combination of TinyBERT TF-IDF.
